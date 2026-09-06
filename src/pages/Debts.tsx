@@ -92,10 +92,23 @@ export default function Debts() {
   }, [debts]);
 
   const handleSave = (data: FormData) => {
+    const parseCurrency = (value: string): number => {
+      if (!value) return 0;
+      const numericValue = value.replace(/\./g, '').replace(',', '.');
+      return parseFloat(numericValue) || 0;
+    };
+
+    const normalized = {
+      ...data,
+      original_amount: parseCurrency(data.original_amount),
+      lump_sum_settlement_amount: data.lump_sum_settlement_amount ? parseCurrency(data.lump_sum_settlement_amount) : undefined,
+      installment_amount: data.installment_amount ? parseCurrency(data.installment_amount) : undefined,
+    };
+
     if (editingDebt) {
-      updateDebt.mutate({ id: editingDebt.id, ...data });
+      updateDebt.mutate({ id: editingDebt.id, ...normalized });
     } else {
-      createDebt.mutate(data);
+      createDebt.mutate(normalized);
     }
     setDialogOpen(false);
     setEditingDebt(null);
