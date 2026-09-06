@@ -1,0 +1,121 @@
+/* ============================================
+   Animações — Orb de IA + Barra de entrada
+   ============================================ */
+
+@keyframes orb-rotate-cw {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes orb-rotate-ccw {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes orb-pulse {
+  0%, 100% { transform: scale(1.5); opacity: 0.55; }
+  50% { transform: scale(1.75); opacity: 0.85; }
+}
+
+@keyframes orb-flow-shift {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(3%, -4%) scale(1.06); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+
+@keyframes border-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes wave-bar {
+  0%, 100% { transform: scaleY(0.35); }
+  50% { transform: scaleY(1); }
+}
+
+@keyframes neuron-float-1 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.8; }
+  25% { transform: translate(8px, -10px) scale(1.2); opacity: 1; }
+  50% { transform: translate(-4px, -18px) scale(0.9); opacity: 0.6; }
+  75% { transform: translate(-10px, -6px) scale(1.1); opacity: 1; }
+}
+
+@keyframes neuron-float-2 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+  33% { transform: translate(-10px, -8px) scale(1.3); opacity: 1; }
+  66% { transform: translate(6px, -14px) scale(0.85); opacity: 0.5; }
+}
+
+@keyframes neuron-float-3 {
+  0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.9; }
+  50% { transform: translate(10px, 6px) scale(1.15); opacity: 0.4; }
+}
+
+@keyframes neuron-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.6; }
+  50% { transform: scale(1.6); opacity: 1; }
+}
+
+@keyframes neuron-pulse-line {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.6; }
+}
+
+.animate-neuron-pulse-line {
+  animation: neuron-pulse-line 3s ease-in-out infinite;
+}
+
+.animate-orb-cw {
+  animation: orb-rotate-cw 14s linear infinite;
+}
+
+.animate-orb-ccw {
+  animation: orb-rotate-ccw 20s linear infinite;
+}
+
+.animate-orb-pulse {
+  animation: orb-pulse 5s ease-in-out infinite;
+}
+
+.animate-orb-flow {
+  animation: orb-flow-shift 7s ease-in-out infinite;
+}
+
+.animate-border-spin {
+  animation: border-spin 4s linear infinite;
+}
+
+.animate-wave-bar {
+  animation: wave-bar 1s ease-in-out infinite;
+}
+
+.neuron-particle {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168,100,255,1) 0%, rgba(168,100,255,0) 70%);
+  filter: blur(1px);
+  box-shadow: 0 0 6px 2px rgba(168,100,255,0.6);
+}
+
+.neuron-core {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168,100,255,0.35) 0%, transparent 65%);
+  animation: neuron-pulse 3s ease-in-out infinite;
+}
+
+/* Respeita usuários que preferem menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  .animate-orb-cw,
+  .animate-orb-ccw,
+  .animate-orb-pulse,
+  .animate-orb-flow,
+  .animate-border-spin,
+  .animate-wave-bar,
+  .neuron-particle,
+  .neuron-core,
+  .animate-neuron-pulse-line {
+    animation: none !important;
+  }
+}

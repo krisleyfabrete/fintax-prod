@@ -1,0 +1,393 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Fintax Finanças Design System - Neon Green Edition */
+
+@layer base {
+  :root {
+    --background: 222 47% 7%;
+    --foreground: 210 40% 98%;
+
+    --card: 222 47% 11%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222 47% 11%;
+    --popover-foreground: 210 40% 98%;
+
+    /* Primary - Indigo Fintax */
+    --primary: 237 85% 62%;
+    --primary-foreground: 222 47% 5%;
+
+    /* Secondary - Purple Fintax */
+    --secondary: 256 85% 62%;
+    --secondary-foreground: 222 47% 5%;
+
+    /* Accent - Purple vibrante */
+    --accent: 256 75% 55%;
+    --accent-foreground: 222 47% 7%;
+
+    --muted: 222 25% 18%;
+    --muted-foreground: 215 20% 65%;
+
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 222 25% 22%;
+    --input: 222 25% 22%;
+    --ring: 237 85% 62%;
+
+    --radius: 0.75rem;
+
+    /* Custom colors for financial app - mais vibrantes */
+    --income: 160 90% 50%;
+    --expense: 0 90% 60%;
+    --warning: 45 100% 55%;
+    --info: 237 85% 62%;
+
+    /* Sidebar - mais escura para contraste */
+    --sidebar-background: 222 47% 4%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 237 85% 62%;
+    --sidebar-primary-foreground: 222 47% 5%;
+    --sidebar-accent: 222 30% 15%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 222 25% 18%;
+    --sidebar-ring: 237 85% 62%;
+  }
+
+    .dark {
+    /* Primary - Indigo Fintax */
+    --primary: 237 85% 62%;
+    --primary-foreground: 222 47% 5%;
+
+    --secondary: 256 85% 62%;
+    --secondary-foreground: 222 47% 5%;
+
+    --accent: 256 75% 55%;
+    --accent-foreground: 222 47% 7%;
+
+    --muted: 222 25% 18%;
+    --muted-foreground: 215 20% 65%;
+
+    --destructive: 0 85% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 222 25% 22%;
+    --input: 222 25% 22%;
+    --ring: 237 85% 62%;
+
+    --income: 160 90% 50%;
+    --expense: 0 90% 60%;
+    --warning: 45 100% 55%;
+    --info: 237 85% 62%;
+
+    --sidebar-background: 222 47% 4%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 237 85% 62%;
+    --sidebar-primary-foreground: 222 47% 5%;
+    --sidebar-accent: 222 30% 15%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 222 25% 18%;
+    --sidebar-ring: 237 85% 62%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    /* Prevent iOS text size adjustment */
+    -webkit-text-size-adjust: 100%;
+    /* Enable smooth scrolling */
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Inter', sans-serif;
+    /* Prevent pull-to-refresh on mobile */
+    overscroll-behavior-y: contain;
+    /* Safe area insets for notched devices */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  }
+
+  /* Improve touch targets on mobile */
+  button, 
+  [role="button"],
+  a {
+    @apply touch-manipulation;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Improve input appearance on iOS */
+  input, textarea, select {
+    @apply appearance-none;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+}
+
+@layer utilities {
+  .gradient-primary {
+    background: linear-gradient(135deg, hsl(237 85% 62%) 0%, hsl(256 75% 55%) 100%);
+  }
+
+  /* Títulos de página centralizados no mobile, alinhados à esquerda no desktop */
+  .app-main h1 {
+    text-align: center;
+    justify-content: center;
+  }
+
+  .app-main h1 + p {
+    text-align: center;
+  }
+
+  @media (min-width: 768px) {
+    .app-main h1 {
+      text-align: left;
+      justify-content: flex-start;
+    }
+
+    .app-main h1 + p {
+      text-align: left;
+    }
+  }
+
+  .gradient-income {
+    background: linear-gradient(135deg, hsl(var(--income)) 0%, hsl(237 85% 62%) 100%);
+  }
+
+  .gradient-expense {
+    background: linear-gradient(135deg, hsl(var(--expense)) 0%, hsl(330 90% 55%) 100%);
+  }
+
+  .gradient-accent {
+    background: linear-gradient(135deg, hsl(var(--accent)) 0%, hsl(237 85% 62%) 100%);
+  }
+
+  .gradient-card {
+    background: linear-gradient(180deg, hsl(var(--card)) 0%, hsl(222 47% 4%) 100%);
+  }
+
+  .text-gradient {
+    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .shadow-glow {
+    box-shadow: 0 0 60px -10px hsl(var(--primary) / 0.5);
+  }
+
+  .shadow-card {
+    box-shadow: 
+      0 4px 30px -8px hsl(var(--primary) / 0.15),
+      0 0 1px hsl(var(--border));
+  }
+
+  .shadow-neon {
+    box-shadow: 
+      0 0 20px hsl(var(--primary) / 0.3), 
+      0 0 40px hsl(var(--primary) / 0.15),
+      inset 0 1px 0 hsl(var(--foreground) / 0.05);
+  }
+
+  .border-glow {
+    border-color: hsl(var(--primary) / 0.5);
+  }
+
+  .animate-float {
+    animation: float 4s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  /* Animação de entrada para cards de pricing */
+  .animate-pricing-enter {
+    animation: pricing-enter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+  }
+
+  @keyframes pricing-enter {
+    0% { 
+      opacity: 0;
+      transform: translateY(40px) scale(0.9);
+    }
+    100% { 
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  .animate-pulse-soft {
+    animation: pulse-soft 2.5s ease-in-out infinite;
+  }
+
+  @keyframes pulse-soft {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.75; }
+  }
+
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  @keyframes glow {
+    from { box-shadow: 0 0 15px hsl(var(--primary) / 0.4); }
+    to { box-shadow: 0 0 30px hsl(var(--primary) / 0.6); }
+  }
+
+  /* Glow pulsante para botões principais */
+  .glow-pulse {
+    animation: glow-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes glow-pulse {
+    0%, 100% { 
+      box-shadow: 0 0 20px hsl(var(--primary) / 0.4), 0 0 40px hsl(var(--primary) / 0.2);
+    }
+    50% { 
+      box-shadow: 0 0 30px hsl(var(--primary) / 0.6), 0 0 60px hsl(var(--primary) / 0.3);
+    }
+  }
+
+  /* Card com hover glow */
+  .card-hover-glow {
+    transition: all 0.3s ease;
+  }
+
+  .card-hover-glow:hover {
+    border-color: hsl(var(--primary) / 0.5);
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.2), 0 0 40px hsl(var(--primary) / 0.1);
+  }
+
+  /* Gradiente de texto verde Fintax */
+  .text-gradient-fintax {
+    background: linear-gradient(135deg, hsl(237 85% 62%) 0%, hsl(256 70% 50%) 50%, hsl(160 70% 50%) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Mobile-first responsive utilities */
+  .mobile-padding {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+
+  .mobile-stack {
+    @apply flex flex-col sm:flex-row;
+  }
+
+  .mobile-grid {
+    @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+  }
+
+  /* Touch-friendly spacing */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  /* Safe area aware footer */
+  .safe-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+
+  /* Responsive text */
+  .text-responsive-sm {
+    @apply text-xs sm:text-sm;
+  }
+
+  .text-responsive-base {
+    @apply text-sm sm:text-base;
+  }
+
+  .text-responsive-lg {
+    @apply text-base sm:text-lg md:text-xl;
+  }
+
+  .text-responsive-xl {
+    @apply text-lg sm:text-xl md:text-2xl lg:text-3xl;
+  }
+
+  /* Hide on mobile, show on desktop */
+  .desktop-only {
+    @apply hidden md:block;
+  }
+
+  /* Show on mobile, hide on desktop */
+  .mobile-only {
+    @apply block md:hidden;
+  }
+
+  /* Responsive card grid */
+  .card-grid {
+    @apply grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4;
+  }
+
+  /* Responsive stat grid */
+  .stat-grid {
+    @apply grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4;
+  }
+}
+
+/* Card vidro líquido — mesmo design da dock (unlayered p/ sobrescrever bg-card/shadow-sm) */
+.glass-card {
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-radius: 1.5rem;
+  background-color: transparent;
+  background-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.06), rgba(0, 0, 0, 0.40));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 8px 32px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+}
+
+/* Reserva espaço inferior p/ a dock fixa no mobile (dock some no lg) */
+.app-main,
+.admin-main {
+  padding-bottom: max(9rem, calc(9rem + env(safe-area-inset-bottom)));
+}
+
+@media (min-width: 1024px) {
+  .app-main,
+  .admin-main {
+    padding-bottom: 1.5rem;
+  }
+}
+
+/* Hide scrollbar but keep functionality */
+html {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+*::-webkit-scrollbar {
+  display: none;
+}
+
+/* Keep scroll functionality */
+html, body, * {
+  overflow: auto;
+}

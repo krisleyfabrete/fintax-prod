@@ -1,0 +1,24 @@
+
+> fintax-financas@0.0.0 predev
+> node scripts/version.mjs
+
+Version: 1.308.04092026
+
+> fintax-financas@0.0.0 dev
+> vite --port 5174
+
+
+  [32m[1mVITE[22m v5.4.19[39m  [2mready in [0m[1m363[22m[2m[0m ms[22m
+
+  [32m➜[39m  [1mLocal[22m:   [36mhttp://localhost:[1m5174[22m/[39m
+  [32m➜[39m  [1mNetwork[22m: [36mhttp://192.168.1.6:[1m5174[22m/[39m
+[2m[32m  ➜[39m[22m[2m  press [22m[1mh + enter[22m[2m to show help[22m
+Browserslist: browsers data (caniuse-lite) is 9 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+[2m22:38:01[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/components/admin/AdminBottomDock.tsx, /src/index.css[22m
+[2m22:39:24[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/admin/AdminSettings.tsx, /src/index.css[22m
+[2m22:39:25[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/admin/AdminSettings.tsx, /src/index.css[22m
+[2m22:39:29[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/pages/admin/AdminSubscriptions.tsx, /src/index.css[22m
+[2m22:40:09[22m [36m[1m[vite][22m[39m [32mpage reload [39m[2msrc/integrations/supabase/types.ts[22m
+[2m22:40:44[22m [36m[1m[vite][22m[39m [32mhmr update [39m[2m/src/index.css, /src/pages/Index.tsx, /src/components/shared/AppFooter.tsx, /src/components/layout/DevBadge.tsx[22m

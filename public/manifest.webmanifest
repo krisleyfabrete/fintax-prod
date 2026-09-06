@@ -1,0 +1,21 @@
+{
+  "name": "Fintax Finanças",
+  "short_name": "Fintax",
+  "description": "Controle suas finanças pessoais e familiares de forma simples e inteligente.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0A0A0C",
+  "theme_color": "#8B5CF6",
+  "icons": [
+    {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

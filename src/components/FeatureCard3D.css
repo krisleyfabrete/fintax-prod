@@ -1,0 +1,156 @@
+.feature-card-parent {
+  width: 100%;
+  height: 300px;
+  perspective: 1000px;
+}
+
+.feature-card {
+  height: 100%;
+  border-radius: 50px;
+  background: linear-gradient(135deg, hsl(237, 85%, 62%) 0%, hsl(256, 75%, 55%) 100%);
+  transition: all 0.5s ease-in-out;
+  transform-style: preserve-3d;
+  box-shadow: rgba(26, 26, 46, 0) 40px 50px 25px -40px, rgba(79, 94, 247, 0.2) 0px 25px 25px -5px;
+  position: relative;
+  will-change: transform;
+}
+
+.feature-card-glass {
+  transform-style: preserve-3d;
+  position: absolute;
+  inset: 8px;
+  border-radius: 55px;
+  border-top-right-radius: 100%;
+  background: linear-gradient(0deg, rgba(255, 255, 255, 0.349) 0%, rgba(255, 255, 255, 0.815) 100%);
+  transform: translate3d(0px, 0px, 25px);
+  border-left: 1px solid white;
+  border-bottom: 1px solid white;
+  transition: all 0.5s ease-in-out;
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+}
+
+.feature-card-content {
+  padding: 100px 60px 0px 30px;
+  transform: translate3d(0, 0, 26px);
+  position: relative;
+}
+
+.feature-card-title {
+  display: block;
+  color: hsl(237, 85%, 50%);
+  font-weight: 900;
+  font-size: 20px;
+}
+
+.feature-card-text {
+  display: block;
+  color: hsla(237, 85%, 50%, 0.76);
+  font-size: 15px;
+  margin-top: 20px;
+  line-height: 1.5;
+}
+
+
+
+.feature-card-logo {
+  position: absolute;
+  right: 0;
+  top: 0;
+  transform-style: preserve-3d;
+}
+
+.feature-circle {
+  display: block;
+  position: absolute;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  top: 0;
+  right: 0;
+  box-shadow: rgba(100, 100, 111, 0.2) -10px 10px 20px 0px;
+  -webkit-backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px);
+  background: hsla(237, 85%, 62%, 0.2);
+  transition: all 0.5s ease-in-out;
+}
+
+.feature-circle1 {
+  width: 170px;
+  transform: translate3d(0, 0, 20px);
+  top: 8px;
+  right: 8px;
+}
+
+.feature-circle2 {
+  width: 140px;
+  transform: translate3d(0, 0, 40px);
+  top: 10px;
+  right: 10px;
+  -webkit-backdrop-filter: blur(1px);
+  backdrop-filter: blur(1px);
+  transition-delay: 0.4s;
+}
+
+.feature-circle3 {
+  width: 110px;
+  transform: translate3d(0, 0, 60px);
+  top: 17px;
+  right: 17px;
+  transition-delay: 0.8s;
+}
+
+.feature-circle4 {
+  width: 80px;
+  transform: translate3d(0, 0, 80px);
+  top: 23px;
+  right: 23px;
+  transition-delay: 1.2s;
+}
+
+.feature-circle5 {
+  width: 50px;
+  transform: translate3d(0, 0, 100px);
+  top: 30px;
+  right: 30px;
+  display: grid;
+  place-content: center;
+  transition-delay: 1.6s;
+}
+
+.feature-circle-icon {
+  color: white;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.feature-circle-icon svg {
+  width: 20px;
+  height: 20px;
+  stroke: white;
+  fill: none;
+}
+
+/* Hover effects */
+.feature-card-parent:hover .feature-card {
+  transform: rotate3d(1, 1, 0, 30deg);
+  box-shadow: rgba(26, 26, 46, 0.3) 30px 50px 25px -40px, rgba(79, 94, 247, 0.1) 0px 25px 30px 0px;
+}
+
+.feature-card-parent:hover .feature-circle2 {
+  transform: translate3d(0, 0, 60px);
+}
+
+.feature-card-parent:hover .feature-circle3 {
+  transform: translate3d(0, 0, 80px);
+}
+
+.feature-card-parent:hover .feature-circle4 {
+  transform: translate3d(0, 0, 100px);
+}
+
+.feature-card-parent:hover .feature-circle5 {
+  transform: translate3d(0, 0, 120px);
+}
