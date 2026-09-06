@@ -15,6 +15,7 @@ import { User, CreditCard, Bell, Shield, Loader2, Upload, Crown, Settings2, Chec
 import { toast } from 'sonner';
 import { NotificationSettings } from '@/components/settings/NotificationSettings';
 import { PushNotificationSettings } from '@/components/settings/PushNotificationSettings';
+import { PWAInstallCard } from '@/components/pwa/PWAInstallCard';
 import { PixPaymentHistory } from '@/components/settings/PixPaymentHistory';
 import { validateCPF, validatePhone } from '@/lib/validation';
 import { supabase } from '@/integrations/supabase/client';
@@ -544,6 +545,7 @@ export default function Settings() {
           </TabsContent>
 
           <TabsContent value="notifications" className="space-y-6">
+            <PWAInstallCard />
             <PushNotificationSettings />
             <NotificationSettings />
           </TabsContent>

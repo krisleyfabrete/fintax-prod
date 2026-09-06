@@ -30,12 +30,13 @@ import {
   PiggyBank,
   DollarSign,
   Crown,
-  Sparkles
+  Sparkles,
+  Smartphone
 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { useIsMobile } from '@/hooks/use-mobile';
+import { PWAInstallCard } from '@/components/pwa/PWAInstallCard';
 import { DEFAULT_PLAN_PRICES_REAIS, normalizePlanPrices, pricesReaisToCents } from '@/lib/planPrices';
 
 interface AdminSetting {
@@ -447,7 +448,7 @@ export default function AdminSettings() {
         )}
 
         <Tabs defaultValue="plans" className="space-y-4 md:space-y-6">
-          <TabsList className="w-full grid grid-cols-4">
+          <TabsList className="w-full grid grid-cols-4 md:grid-cols-5">
             <TabsTrigger value="plans" className="text-xs md:text-sm flex items-center gap-1 md:gap-2">
               <Crown className="h-3 w-3 md:h-4 md:w-4" />
               <span className="hidden sm:inline">Planos e </span>Limites
@@ -463,6 +464,10 @@ export default function AdminSettings() {
             <TabsTrigger value="ia" className="text-xs md:text-sm flex items-center gap-1 md:gap-2">
               <Sparkles className="h-3 w-3 md:h-4 md:w-4" />
               IA
+            </TabsTrigger>
+            <TabsTrigger value="app" className="text-xs md:text-sm flex items-center gap-1 md:gap-2">
+              <Smartphone className="h-3 w-3 md:h-4 md:w-4" />
+              App
             </TabsTrigger>
           </TabsList>
 
@@ -1225,6 +1230,18 @@ export default function AdminSettings() {
                     </p>
                   </div>
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="app" className="space-y-4 md:space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Aplicativo</CardTitle>
+                <CardDescription>Instale o app e gerencie preferências do cliente</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <PWAInstallCard />
               </CardContent>
             </Card>
           </TabsContent>
