@@ -32,7 +32,7 @@ export function DeleteUserDialog({ open, onOpenChange, user, onSuccess }: Delete
     setIsLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('delete-user', {
-        body: { userId: user.id },
+        body: { user_id: user.id },
       });
 
       const functionError = (error as unknown as { status?: number; message?: string }) || {};
