@@ -13,8 +13,10 @@ import {
   challengeAndVerifyTotp,
   startTotpEnrollment,
   TotpEnrollment,
+  setTotpCooldown,
 } from '@/lib/mfa';
 import { useAuth } from '@/contexts/AuthContext';
+import { useAdminSession } from '@/hooks/useAdminSession';
 
 type Phase = 'credentials' | 'challenge' | 'enroll';
 
@@ -22,6 +24,7 @@ export default function AdminLogin() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { signOut } = useAuth();
+  const { ensureSession } = useAdminSession();
 
   const [phase, setPhase] = useState<Phase>('credentials');
   const [email, setEmail] = useState('');
@@ -171,6 +174,8 @@ export default function AdminLogin() {
     }
 
     toast.success('Bem-vindo, Administrador!');
+    setTotpCooldown();
+    ensureSession();
     navigate('/admin');
   };
 
@@ -188,6 +193,8 @@ export default function AdminLogin() {
     }
 
     toast.success('2FA ativado! Bem-vindo, Administrador.');
+    setTotpCooldown();
+    ensureSession();
     navigate('/admin');
   };
 

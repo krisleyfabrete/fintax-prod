@@ -10,7 +10,7 @@ interface LLMProvider {
   id: string;
   name: string;
   apiKey: string;
-  provider: 'openai' | 'google' | 'anthropic' | 'cohere' | 'mistral' | 'custom';
+  provider: 'openai' | 'google' | 'anthropic' | 'cohere' | 'mistral' | 'groq' | 'custom';
   model: string;
   status: 'active' | 'inactive' | 'error';
   lastTested?: string;
@@ -38,15 +38,21 @@ const PROVIDER_CONFIGS = {
   },
   cohere: {
     name: 'Cohere',
-    patterns: [''],
+    patterns: [],
     recommendedModels: ['command', 'command-light'],
     url: 'https://dashboard.cohere.ai/api-keys',
   },
   mistral: {
     name: 'Mistral AI',
-    patterns: [''],
+    patterns: [],
     recommendedModels: ['mistral-large-latest', 'mistral-medium-latest', 'mistral-small-latest'],
     url: 'https://console.mistral.ai/api-keys',
+  },
+  groq: {
+    name: 'Groq',
+    patterns: ['gsk_'],
+    recommendedModels: ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'mixtral-8x7b-32768'],
+    url: 'https://console.groq.com/keys',
   },
   custom: {
     name: 'Custom',
@@ -148,7 +154,10 @@ export default function AdminLLMConfig() {
 
       switch (provider.provider) {
         case 'openai':
-          endpoint = 'https://api.openai.com/v1/chat/completions';
+        case 'groq':
+          endpoint = provider.provider === 'groq'
+            ? 'https://api.groq.com/openai/v1/chat/completions'
+            : 'https://api.openai.com/v1/chat/completions';
           body = {
             model: provider.model,
             messages: [{ role: 'user', content: 'Hi' }],
@@ -179,6 +188,7 @@ export default function AdminLLMConfig() {
         headers: {
           'Content-Type': 'application/json',
           ...(provider.provider === 'openai' && { Authorization: `Bearer ${provider.apiKey}` }),
+          ...(provider.provider === 'groq' && { Authorization: `Bearer ${provider.apiKey}` }),
           ...(provider.provider === 'anthropic' && {
             'x-api-key': provider.apiKey,
             'anthropic-version': '2023-06-01',

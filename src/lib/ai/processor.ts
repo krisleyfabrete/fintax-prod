@@ -138,7 +138,8 @@ async function callOpenAI(
   systemPrompt: string,
   temperature: number,
   maxTokens: number,
-  tools: AiTool[]
+  tools: AiTool[],
+  endpoint = 'https://api.openai.com/v1/chat/completions'
 ) {
   const functionDeclarations = tools.map((tool) => ({
     type: 'function',
@@ -164,7 +165,7 @@ async function callOpenAI(
     body.tool_choice = 'auto';
   }
 
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+  const response = await fetch(endpoint, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

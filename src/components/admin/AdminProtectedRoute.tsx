@@ -2,7 +2,8 @@ import { ReactNode, useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useAdmin } from '@/hooks/useAdmin';
-import { getCurrentAal } from '@/lib/mfa';
+import { useAdminSession } from '@/hooks/useAdminSession';
+import { getCurrentAal, isTotpCooldownActive } from '@/lib/mfa';
 import { Loader2, ShieldX } from 'lucide-react';
 
 interface AdminProtectedRouteProps {
@@ -12,6 +13,7 @@ interface AdminProtectedRouteProps {
 export function AdminProtectedRoute({ children }: AdminProtectedRouteProps) {
   const { user, loading: authLoading } = useAuth();
   const { isAdmin, isLoading: adminLoading } = useAdmin();
+  const { verifySession, isChecking: isSessionChecking } = useAdminSession();
   const location = useLocation();
   const [mfaPending, setMfaPending] = useState(false);
 
@@ -19,14 +21,29 @@ export function AdminProtectedRoute({ children }: AdminProtectedRouteProps) {
     if (!user || !isAdmin || authLoading || adminLoading) return;
     let cancelled = false;
     getCurrentAal().then((aal) => {
-      if (!cancelled && aal !== 'aal2') setMfaPending(true);
+      if (!cancelled && aal !== 'aal2' && !isTotpCooldownActive()) {
+        setMfaPending(true);
+      }
     });
     return () => {
       cancelled = true;
     };
   }, [user, isAdmin, authLoading, adminLoading]);
 
-  if (authLoading || adminLoading) {
+  useEffect(() => {
+    if (!user || !isAdmin || authLoading || adminLoading) return;
+    let cancelled = false;
+    verifySession().then((valid) => {
+      if (!cancelled && !valid) {
+        setMfaPending(false);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [user, isAdmin, authLoading, adminLoading, verifySession]);
+
+  if (authLoading || adminLoading || isSessionChecking) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-900">
         <div className="flex flex-col items-center gap-4">
@@ -42,7 +59,7 @@ export function AdminProtectedRoute({ children }: AdminProtectedRouteProps) {
     return <Navigate to="/admin/login" replace />;
   }
 
-  // Require 2FA (aal2) for administrators
+  // Require 2FA (aal2) for administrators unless TOTP cooldown is active
   if (isAdmin && mfaPending) {
     return <Navigate to="/admin/login?mfa=1" replace state={{ from: location }} />;
   }
@@ -51,7 +68,7 @@ export function AdminProtectedRoute({ children }: AdminProtectedRouteProps) {
   if (!isAdmin) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-900">
-        <div className="flex flex-col items-center gap-4 text-center p-8">
+        <div className="flex flex-col items-center gap-2 text-center p-8">
           <ShieldX className="h-16 w-16 text-red-500" />
           <h1 className="text-2xl font-bold text-white">Acesso Negado</h1>
           <p className="text-slate-400 max-w-md">

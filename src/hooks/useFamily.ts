@@ -84,29 +84,24 @@ export function useFamily() {
       queryFn: async () => {
         if (!groupId) return [];
         
-        // First get members
         const { data: membersData, error: membersError } = await supabase
-          .from('family_members')
-          .select('*')
-          .eq('group_id', groupId)
-          .order('joined_at', { ascending: true });
+          .rpc('get_group_members_with_profiles', { _group_id: groupId });
 
         if (membersError) throw membersError;
 
-        // Then get profiles for each member
-        const userIds = membersData.map(m => m.user_id);
-        const { data: profilesData, error: profilesError } = await supabase
-          .from('profiles')
-          .select('id, full_name, avatar_url')
-          .in('id', userIds);
-
-        if (profilesError) throw profilesError;
-
-        // Merge members with profiles
-        const membersWithProfiles = membersData.map(member => ({
-          ...member,
+        const membersWithProfiles = (membersData || []).map((member) => ({
+          id: member.id,
+          group_id: member.group_id,
+          user_id: member.user_id,
           role: member.role as 'admin' | 'member',
-          profile: profilesData?.find(p => p.id === member.user_id) || null,
+          joined_at: member.joined_at,
+          profile: member.profile_id
+            ? {
+                id: member.profile_id,
+                full_name: member.full_name,
+                avatar_url: member.avatar_url,
+              }
+            : null,
         }));
 
         return membersWithProfiles as FamilyMember[];

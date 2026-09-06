@@ -9,6 +9,43 @@ export interface TotpEnrollment {
 
 export type AalLevel = 'aal1' | 'aal2' | undefined;
 
+const TOTP_COOLDOWN_KEY = 'admin_totp_cooldown';
+const TOTP_COOLDOWN_MS = 10 * 60 * 1000; // 10 minutes
+
+export function getTotpCooldown(): number | null {
+  try {
+    const raw = localStorage.getItem(TOTP_COOLDOWN_KEY);
+    if (!raw) return null;
+    const timestamp = Number(raw);
+    if (Number.isNaN(timestamp)) return null;
+    return timestamp;
+  } catch {
+    return null;
+  }
+}
+
+export function isTotpCooldownActive(): boolean {
+  const cooldown = getTotpCooldown();
+  if (!cooldown) return false;
+  return Date.now() - cooldown < TOTP_COOLDOWN_MS;
+}
+
+export function setTotpCooldown(now = Date.now()): void {
+  try {
+    localStorage.setItem(TOTP_COOLDOWN_KEY, String(now));
+  } catch {
+    // ignore storage errors
+  }
+}
+
+export function clearTotpCooldown(): void {
+  try {
+    localStorage.removeItem(TOTP_COOLDOWN_KEY);
+  } catch {
+    // ignore storage errors
+  }
+}
+
 export async function getCurrentAal(): Promise<AalLevel> {
   const { data } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
   return data?.currentLevel;
