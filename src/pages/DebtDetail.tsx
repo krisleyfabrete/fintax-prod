@@ -236,7 +236,20 @@ export default function DebtDetail() {
           debt={debt}
           categories={expenseCategories}
           onSubmit={(data) => {
-            updateDebt.mutate({ id: debt.id, ...data });
+            const parseCurrency = (value: string): number => {
+              if (!value) return 0;
+              const numericValue = value.replace(/\./g, '').replace(',', '.');
+              return parseFloat(numericValue) || 0;
+            };
+
+            const normalized = {
+              ...data,
+              original_amount: parseCurrency(data.original_amount),
+              lump_sum_settlement_amount: data.lump_sum_settlement_amount ? parseCurrency(data.lump_sum_settlement_amount) : undefined,
+              installment_amount: data.installment_amount ? parseCurrency(data.installment_amount) : undefined,
+            };
+
+            updateDebt.mutate({ id: debt.id, ...normalized });
             setEditOpen(false);
           }}
         />

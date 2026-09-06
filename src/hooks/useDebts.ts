@@ -140,6 +140,8 @@ export function useDebts(filters?: DebtFilters) {
         status: 'open' as DebtStatus,
       };
 
+      console.log('createDebt payload:', newDebt);
+
       const { data, error } = await supabase
         .from('debts')
         .insert(newDebt)
@@ -161,6 +163,7 @@ export function useDebts(filters?: DebtFilters) {
 
   const updateDebt = useMutation({
     mutationFn: async ({ id, ...updates }: DebtUpdate & { id: string }) => {
+      console.log('updateDebt payload:', { id, updates });
       const { data, error } = await supabase
         .from('debts')
         .update(updates)
