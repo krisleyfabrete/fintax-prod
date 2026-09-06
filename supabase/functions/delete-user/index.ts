@@ -14,6 +14,10 @@ Deno.serve(async (req) => {
     if (!hasAdmin) return json({ error: "Sem permissão" }, { status: 403 });
 
     const body: Body = await req.json();
+    if (body.user_id === user.id) {
+      return json({ error: "Não é possível excluir o próprio usuário admin." }, { status: 400 });
+    }
+
     const { error } = await supabase.auth.admin.deleteUser(body.user_id);
     if (error) return json({ error: error.message }, { status: 400 });
     await supabase.rpc("log_admin_action", { p_action: "delete_user", p_target_type: "user", p_target_id: body.user_id, p_details: {} });

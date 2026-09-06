@@ -166,9 +166,9 @@ export function AdminBottomDock({
             rounded-full bg-purple-600/40 blur-2xl"
         />
 
-        {/* Dock (liquid glass) — 5 slots + FAB central flutuante */}
+        {/* Dock (liquid glass) — fileira central com ícones + IA centralizada */}
         <div
-          className="relative flex items-center gap-2 rounded-full px-3 py-2.5
+          className="relative flex items-center justify-center gap-2 rounded-full px-3 py-2.5
             bg-gradient-to-b from-white/[0.06] to-black/40 backdrop-blur-2xl
             shadow-[0_8px_32px_rgba(0,0,0,0.55)] ring-1 ring-white/10"
           style={{
@@ -176,7 +176,7 @@ export function AdminBottomDock({
               "inset 0 1px 0 rgba(255,255,255,0.15), 0 8px 32px rgba(0,0,0,0.55)",
           }}
         >
-          {/* Itens esquerda */}
+          {/* Itens da esquerda */}
           <div className="flex items-center gap-1">
             {LEFT_ITEMS.map((item) => (
               <DockButton
@@ -188,12 +188,23 @@ export function AdminBottomDock({
             ))}
           </div>
 
-          {/* Slot reservado para o FAB central — alinhado com DockButton (h-14) */}
-          <div className="relative flex h-14 w-14 shrink-0 items-center justify-center">
-            <span className="sr-only">IA central</span>
-          </div>
+          {/* Botão central IA — alinhado com a fileira, não flutuante */}
+          <button
+            type="button"
+            aria-label="IA"
+            onClick={onCentralPress}
+            className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full
+              bg-gradient-to-br from-indigo-500 to-purple-600 ring-2 ring-white/60
+              transition-transform duration-150 active:scale-95"
+            style={{
+              boxShadow:
+                "0 0 0 4px rgba(10,10,12,0.9), 0 0 28px rgba(124,54,192,0.65), inset 0 1px 1px rgba(255,255,255,0.3)",
+            }}
+          >
+            <Brain size={26} strokeWidth={2.75} className="text-white" />
+          </button>
 
-          {/* Itens direita */}
+          {/* Itens da direita */}
           <div className="flex items-center gap-1">
             {RIGHT_ITEMS.map((item) => (
               <DockButton
@@ -216,22 +227,6 @@ export function AdminBottomDock({
           >
             <Menu size={24} strokeWidth={1.8} />
             <span className="text-[11px] font-medium">Mais</span>
-          </button>
-
-          {/* FAB central (IA) — sobreposto no slot vazio, alinhado com a fileira de ícones */}
-          <button
-            type="button"
-            aria-label="IA"
-            onClick={onCentralPress}
-            className="absolute left-1/2 -top-[2px] flex h-14 w-14 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full
-              bg-gradient-to-br from-indigo-500 to-purple-600 ring-2 ring-white/60
-              transition-transform duration-150 active:scale-95"
-            style={{
-              boxShadow:
-                "0 0 0 4px rgba(10,10,12,0.9), 0 0 28px rgba(124,54,192,0.65), inset 0 1px 1px rgba(255,255,255,0.3)",
-            }}
-          >
-            <Brain size={26} strokeWidth={2.75} className="text-white" />
           </button>
         </div>
       </div>

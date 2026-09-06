@@ -28,22 +28,30 @@ export function DeleteUserDialog({ open, onOpenChange, user, onSuccess }: Delete
 
   const handleDelete = async () => {
     if (!user) return;
-    
+
     setIsLoading(true);
     try {
       const { data, error } = await supabase.functions.invoke('delete-user', {
         body: { userId: user.id },
       });
 
-      if (error) throw error;
-      if (data?.error) throw new Error(data.error);
+      const functionError = (error as unknown as { status?: number; message?: string }) || {};
+      const status = functionError.status;
+      const message = functionError.message || (data && typeof data === 'object' && 'error' in data ? String((data as { error?: string }).error) : 'Erro ao chamar função de exclusão');
+
+      if (status && status >= 400) {
+        console.error('Erro delete-user:', { status, message, data });
+        toast.error(`Erro ${status}: ${message}`);
+        return;
+      }
 
       toast.success('Usuário excluído com sucesso!');
       onOpenChange(false);
       onSuccess();
     } catch (error: unknown) {
       console.error('Erro ao excluir usuário:', error);
-      toast.error(error instanceof Error ? error.message : 'Erro ao excluir usuário');
+      const message = error instanceof Error ? error.message : 'Erro ao excluir usuário';
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
