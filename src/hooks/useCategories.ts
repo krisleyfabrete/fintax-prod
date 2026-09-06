@@ -24,6 +24,53 @@ export function useCategories() {
     enabled: !!user,
   });
 
+  const createCategoryMutation = useMutation({
+    mutationFn: async (category: Omit<Category, 'id' | 'created_at' | 'user_id' | 'is_default'>) => {
+      if (!user) throw new Error('Usuário não autenticado');
+      
+      const { data, error } = await supabase
+        .from('categories')
+        .insert({
+          ...category,
+          user_id: user.id,
+          is_default: false,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      toast.success('Categoria criada com sucesso!');
+    },
+    onError: (error: Error) => {
+      toast.error(`Erro ao criar categoria: ${error.message}`);
+    },
+  });
+
+  const updateCategoryMutation = useMutation({
+    mutationFn: async ({ id, ...updates }: Partial<Category> & { id: string }) => {
+      const { data, error } = await supabase
+        .from('categories')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single();
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['categories'] });
+      toast.success('Categoria atualizada com sucesso!');
+    },
+    onError: (error: Error) => {
+      toast.error(`Erro ao atualizar categoria: ${error.message}`);
+    },
+  });
+
   const deleteCategoryMutation = useMutation({
     mutationFn: async (categoryId: string) => {
       const { error } = await supabase
@@ -50,7 +97,11 @@ export function useCategories() {
     incomeCategories,
     expenseCategories,
     isLoading,
+    createCategory: createCategoryMutation.mutateAsync,
+    updateCategory: updateCategoryMutation.mutateAsync,
     deleteCategory: deleteCategoryMutation.mutateAsync,
+    isCreatingCategory: createCategoryMutation.isPending,
+    isUpdatingCategory: updateCategoryMutation.isPending,
     isDeletingCategory: deleteCategoryMutation.isPending,
   };
 }

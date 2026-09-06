@@ -4,7 +4,7 @@ import { useSubcategories, Subcategory } from '@/hooks/useSubcategories';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Trash2, ChevronDown, ChevronRight, Loader2 } from 'lucide-react';
+import { Trash2, ChevronDown, ChevronRight, Loader2, Plus, Pencil } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,14 +20,48 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+
+type CategoryFormData = {
+  name: string;
+  type: 'income' | 'expense';
+  color: string;
+  icon: string;
+};
+
+const defaultFormData: CategoryFormData = {
+  name: '',
+  type: 'expense',
+  color: '#8B5CF6',
+  icon: 'tag',
+};
 
 export function CategoryManager() {
-  const { categories, deleteCategory, isDeletingCategory } = useCategories();
+  const { categories, createCategory, updateCategory, deleteCategory, isCreatingCategory, isUpdatingCategory, isDeletingCategory } = useCategories();
   const { subcategories, getSubcategoriesByCategory, deleteSubcategory, isDeleting } = useSubcategories();
   
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<{ type: 'category' | 'subcategory'; id: string; name: string } | null>(null);
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
+  
+  const [formOpen, setFormOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [formData, setFormData] = useState<CategoryFormData>(defaultFormData);
 
   const expenseCategories = categories.filter(c => c.type === 'expense');
   const incomeCategories = categories.filter(c => c.type === 'income');
@@ -64,9 +98,44 @@ export function CategoryManager() {
     }
   };
 
+  const openCreateForm = (type: 'income' | 'expense') => {
+    setEditingCategory(null);
+    setFormData({ ...defaultFormData, type });
+    setFormOpen(true);
+  };
+
+  const openEditForm = (category: Category) => {
+    setEditingCategory(category);
+    setFormData({
+      name: category.name,
+      type: category.type as 'income' | 'expense',
+      color: category.color || '#8B5CF6',
+      icon: category.icon || 'tag',
+    });
+    setFormOpen(true);
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      if (editingCategory) {
+        await updateCategory({ id: editingCategory.id, ...formData });
+      } else {
+        await createCategory(formData);
+      }
+      setFormOpen(false);
+      setEditingCategory(null);
+      setFormData(defaultFormData);
+    } catch {
+      // error handled in hook
+    }
+  };
+
   const renderCategoryItem = (category: Category) => {
     const categorySubcategories = getSubcategoriesByCategory(category.id);
     const isExpanded = expandedCategories.has(category.id);
+    const canEdit = !category.is_default;
     const canDelete = !category.is_default;
 
     return (
@@ -101,17 +170,30 @@ export function CategoryManager() {
                 )}
               </button>
             </CollapsibleTrigger>
-            {canDelete && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                onClick={() => handleDeleteClick('category', category.id, category.name)}
-                disabled={isDeletingCategory}
-              >
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            )}
+            <div className="flex items-center gap-1">
+              {canEdit && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-muted-foreground hover:text-primary"
+                  onClick={() => openEditForm(category)}
+                  disabled={isUpdatingCategory}
+                >
+                  <Pencil className="h-4 w-4" />
+                </Button>
+              )}
+              {canDelete && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                  onClick={() => handleDeleteClick('category', category.id, category.name)}
+                  disabled={isDeletingCategory}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
           </div>
           
           {categorySubcategories.length > 0 && (
@@ -159,11 +241,25 @@ export function CategoryManager() {
     <>
       <Card className="shadow-card border-0">
         <CardHeader>
-          <CardTitle>Gerenciar Categorias</CardTitle>
-          <CardDescription>
-            Visualize e exclua categorias e subcategorias personalizadas. 
-            Categorias padrão não podem ser excluídas.
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle>Gerenciar Categorias</CardTitle>
+              <CardDescription>
+                Crie, edite e exclua categorias e subcategorias personalizadas.
+                Categorias padrão não podem ser excluídas.
+              </CardDescription>
+            </div>
+            <div className="flex gap-2">
+              <Button size="sm" onClick={() => openCreateForm('expense')}>
+                <Plus className="h-4 w-4 mr-2" />
+                Nova despesa
+              </Button>
+              <Button size="sm" onClick={() => openCreateForm('income')}>
+                <Plus className="h-4 w-4 mr-2" />
+                Nova receita
+              </Button>
+            </div>
+          </div>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="expense" className="space-y-4">
@@ -194,6 +290,71 @@ export function CategoryManager() {
           </Tabs>
         </CardContent>
       </Card>
+
+      <Dialog open={formOpen} onOpenChange={setFormOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{editingCategory ? 'Editar categoria' : 'Nova categoria'}</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleFormSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Nome</Label>
+              <Input
+                id="name"
+                value={formData.name}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                placeholder="Ex: Alimentação"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="type">Tipo</Label>
+              <Select
+                value={formData.type}
+                onValueChange={(value: 'income' | 'expense') => setFormData({ ...formData, type: value })}
+                disabled={!!editingCategory}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecione o tipo" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="expense">Despesa</SelectItem>
+                  <SelectItem value="income">Receita</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="color">Cor</Label>
+              <Input
+                id="color"
+                type="color"
+                value={formData.color}
+                onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="icon">Ícone</Label>
+              <Input
+                id="icon"
+                value={formData.icon}
+                onChange={(e) => setFormData({ ...formData, icon: e.target.value })}
+                placeholder="Ex: tag"
+              />
+            </div>
+            <DialogFooter>
+              <Button type="button" variant="outline" onClick={() => setFormOpen(false)}>
+                Cancelar
+              </Button>
+              <Button type="submit" disabled={isCreatingCategory || isUpdatingCategory}>
+                {(isCreatingCategory || isUpdatingCategory) && (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                )}
+                {editingCategory ? 'Salvar' : 'Criar'}
+              </Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <AlertDialogContent>
