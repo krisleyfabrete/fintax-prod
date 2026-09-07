@@ -16,6 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { DatePicker } from '@/components/ui/date-picker';
 
 interface Account {
   id: string;
@@ -118,19 +119,17 @@ export function ReportFilters({
       <div className="flex items-center gap-2">
         <div className="space-y-1">
           <Label className="text-xs text-muted-foreground">De</Label>
-          <Input
-            type="date"
+          <DatePicker
             value={startDate}
-            onChange={(e) => onStartDateChange(e.target.value)}
+            onChange={onStartDateChange}
             className="w-36 h-9"
           />
         </div>
         <div className="space-y-1">
           <Label className="text-xs text-muted-foreground">Até</Label>
-          <Input
-            type="date"
+          <DatePicker
             value={endDate}
-            onChange={(e) => onEndDateChange(e.target.value)}
+            onChange={onEndDateChange}
             className="w-36 h-9"
           />
         </div>

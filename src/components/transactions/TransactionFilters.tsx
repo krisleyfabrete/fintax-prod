@@ -11,6 +11,7 @@ import {
 import { TransactionFilters as Filters } from '@/hooks/useTransactions';
 import { Category } from '@/hooks/useCategories';
 import { Account } from '@/hooks/useAccounts';
+import { DatePicker } from '@/components/ui/date-picker';
 
 interface TransactionFiltersProps {
   filters: Filters;
@@ -116,18 +117,16 @@ export function TransactionFilters({
         </Select>
 
         {/* Período - Data Início */}
-        <Input
-          type="date"
+        <DatePicker
           value={filters.startDate || ''}
-          onChange={(e) => updateFilter('startDate', e.target.value || undefined)}
+          onChange={(value) => updateFilter('startDate', value || undefined)}
           className="w-[150px]"
         />
 
         {/* Período - Data Fim */}
-        <Input
-          type="date"
+        <DatePicker
           value={filters.endDate || ''}
-          onChange={(e) => updateFilter('endDate', e.target.value || undefined)}
+          onChange={(value) => updateFilter('endDate', value || undefined)}
           className="w-[150px]"
         />
 

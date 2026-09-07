@@ -10,6 +10,7 @@ import { FamilySharingToggle } from '@/components/family/FamilySharingToggle';
 import { useSubcategories } from '@/hooks/useSubcategories';
 import { useDebts } from '@/hooks/useDebts';
 import { supabase } from '@/integrations/supabase/client';
+import { DatePicker } from '@/components/ui/date-picker';
 import {
   Dialog,
   DialogContent,
@@ -138,7 +139,7 @@ export function TransactionDialog({
        const receiptUrl = transaction.receipt_url || '';
        form.reset({
          type: transaction.type as 'income' | 'expense',
-         amount: formatCurrency(String(Math.round(transaction.amount * 100))),
+          amount: formatCurrency(String(Math.abs(Math.round(transaction.amount * 100)))),
          description: transaction.description || '',
          date: transaction.date,
          category_id: transaction.category_id || '',
@@ -374,7 +375,7 @@ export function TransactionDialog({
                   <FormItem>
                     <FormLabel>Data</FormLabel>
                     <FormControl>
-                      <Input {...field} type="date" />
+                      <DatePicker value={field.value} onChange={field.onChange} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

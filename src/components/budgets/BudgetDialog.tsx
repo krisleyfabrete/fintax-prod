@@ -100,7 +100,7 @@ export function BudgetDialog({
     if (budget) {
       form.reset({
         category_id: budget.category_id || '',
-        amount: formatCurrency(String(Math.round(budget.amount * 100))),
+        amount: formatCurrency(String(Math.abs(Math.round(budget.amount * 100)))),
         is_shared_with_family: (budget as { is_shared_with_family?: boolean }).is_shared_with_family || false,
       });
     } else {

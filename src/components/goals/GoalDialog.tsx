@@ -5,6 +5,7 @@ import { z } from 'zod';
 import { format, addMonths, addWeeks } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { CalendarCheck, Info, TrendingDown, PiggyBank, AlertCircle } from 'lucide-react';
+import { DatePicker } from '@/components/ui/date-picker';
 
 // Formata valor para moeda brasileira
 const formatCurrencyInput = (value: string): string => {
@@ -308,7 +309,7 @@ export function GoalDialog({
             <FormItem>
               <FormLabel>Data de Início</FormLabel>
               <FormControl>
-                <Input {...field} type="date" />
+                <DatePicker value={field.value || ''} onChange={field.onChange} />
               </FormControl>
               <FormMessage />
             </FormItem>

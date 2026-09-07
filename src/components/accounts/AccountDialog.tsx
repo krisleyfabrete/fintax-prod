@@ -83,7 +83,7 @@ export function AccountDialog({ open, onOpenChange, account, onSave, isLoading, 
     if (account) {
       setName(account.name);
       setType(account.type);
-      setBalance(formatCurrency(String(Math.round(account.balance * 100))));
+      setBalance(formatCurrency(String(Math.abs(Math.round(account.balance * 100)))));
       setColor(account.color || '#8B5CF6');
       setIsSharedWithFamily((account as { is_shared_with_family?: boolean }).is_shared_with_family || false);
       // Try to match existing account name with a bank

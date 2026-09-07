@@ -17,6 +17,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { DatePicker } from '@/components/ui/date-picker';
 import { 
   Select,
   SelectContent,
@@ -214,10 +215,9 @@ export function ReceiptList({ receipts, categories, onUpdate, onRemove }: Receip
                             onChange={(e) => onUpdate(receipt.id, { amount: parseFloat(e.target.value) || 0 })}
                             placeholder="Valor"
                           />
-                          <Input
-                            type="date"
+                          <DatePicker
                             value={receipt.date}
-                            onChange={(e) => onUpdate(receipt.id, { date: e.target.value })}
+                            onChange={(value) => onUpdate(receipt.id, { date: value })}
                           />
                         </div>
                         <Select

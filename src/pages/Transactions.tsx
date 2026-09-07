@@ -85,7 +85,7 @@ export default function Transactions() {
 
     const transactionData = {
       type: data.type,
-      amount: parseCurrency(data.amount),
+      amount: data.type === 'expense' ? -parseCurrency(data.amount) : parseCurrency(data.amount),
       description: data.description || null,
       date: data.date,
       category_id: data.category_id || null,

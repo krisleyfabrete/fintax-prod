@@ -34,14 +34,23 @@ import { Debt, DebtPriority, DebtVisibility, DebtInterestType } from '@/hooks/us
 import { Category } from '@/hooks/useCategories';
 import { FamilySharingToggle } from '@/components/family/FamilySharingToggle';
 import { useAccounts } from '@/hooks/useAccounts';
+import { DatePicker } from '@/components/ui/date-picker';
 
-// Formata valor para moeda brasileira
+// Formata valor para moeda brasileira (input)
 const formatCurrency = (value: string): string => {
   const numericValue = value.replace(/\D/g, '');
   if (!numericValue) return '';
 
   const number = parseInt(numericValue, 10) / 100;
   return number.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+};
+
+// Formata número para exibição (com R$)
+const formatCurrencyDisplay = (value: number): string => {
+  return value.toLocaleString('pt-BR', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
@@ -127,8 +136,8 @@ export function DebtDialog({ open, onOpenChange, debt, categories, onSubmit }: D
         responsible_user_id: debt.responsible_user_id || '',
         visibility: debt.visibility || 'private',
         category_id: debt.category_id || '',
-        original_amount: String(debt.original_amount || ''),
-        lump_sum_settlement_amount: debt.lump_sum_settlement_amount ? String(debt.lump_sum_settlement_amount) : '',
+        original_amount: debt.original_amount ? formatCurrencyDisplay(debt.original_amount) : '',
+        lump_sum_settlement_amount: debt.lump_sum_settlement_amount ? formatCurrencyDisplay(debt.lump_sum_settlement_amount) : '',
         has_interest: debt.has_interest || false,
         interest_rate: debt.interest_rate ? Number(debt.interest_rate) : undefined,
         interest_type: debt.interest_type || undefined,
@@ -136,7 +145,7 @@ export function DebtDialog({ open, onOpenChange, debt, categories, onSubmit }: D
         penalty_rate: debt.penalty_rate ? Number(debt.penalty_rate) : undefined,
         installment_enabled: debt.installment_enabled || false,
         installment_count: debt.installment_count || undefined,
-        installment_amount: debt.installment_amount ? String(debt.installment_amount) : '',
+        installment_amount: debt.installment_amount ? formatCurrencyDisplay(debt.installment_amount) : '',
         start_date: debt.start_date || '',
         due_date: debt.due_date || '',
         allows_early_payment: debt.allows_early_payment || false,
@@ -177,8 +186,10 @@ export function DebtDialog({ open, onOpenChange, debt, categories, onSubmit }: D
   const watchLumpSum = form.watch('lump_sum_settlement_amount');
 
   const potentialSavings = useMemo(() => {
-    if (watchOriginalAmount && watchLumpSum && watchLumpSum < watchOriginalAmount) {
-      return watchOriginalAmount - watchLumpSum;
+    const original = parseCurrency(watchOriginalAmount);
+    const lumpSum = parseCurrency(watchLumpSum);
+    if (original && lumpSum && lumpSum < original) {
+      return original - lumpSum;
     }
     return null;
   }, [watchOriginalAmount, watchLumpSum]);
@@ -332,7 +343,10 @@ export function DebtDialog({ open, onOpenChange, debt, categories, onSubmit }: D
                       <FormItem>
                         <FormLabel>Data de origem</FormLabel>
                         <FormControl>
-                          <Input type="date" {...field} />
+                          <DatePicker
+                            value={field.value || ''}
+                            onChange={field.onChange}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -346,7 +360,10 @@ export function DebtDialog({ open, onOpenChange, debt, categories, onSubmit }: D
                       <FormItem>
                         <FormLabel>Data de vencimento</FormLabel>
                         <FormControl>
-                          <Input type="date" {...field} />
+                          <DatePicker
+                            value={field.value || ''}
+                            onChange={field.onChange}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>

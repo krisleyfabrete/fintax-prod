@@ -20,6 +20,7 @@ import {
 import { Investment, InvestmentFormData, InvestmentType, INVESTMENT_TYPES } from '@/hooks/useInvestments';
 import { Portfolio } from '@/hooks/usePortfolios';
 import { format } from 'date-fns';
+import { DatePicker } from '@/components/ui/date-picker';
 
 // Função para formatar valor como moeda brasileira
 const formatCurrency = (value: string): string => {
@@ -251,12 +252,9 @@ export function InvestmentDialog({
 
             <div className="space-y-2">
               <Label htmlFor="purchase_date">Data da Compra</Label>
-              <Input
-                id="purchase_date"
-                type="date"
+              <DatePicker
                 value={purchaseDate}
-                onChange={(e) => setPurchaseDate(e.target.value)}
-                required
+                onChange={setPurchaseDate}
               />
             </div>
           </div>
