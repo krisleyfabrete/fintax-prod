@@ -22,7 +22,7 @@ export function useFamilyData(groupId: string | null, filters?: FamilyDataFilter
 
       if (error) throw error;
       const ids = (data || []).map((m: { user_id: string }) => m.user_id);
-      console.log('DEBUG family-member-ids', { groupId, raw: data, ids });
+      console.log('DEBUG family-member-ids', 'groupId=', groupId, 'rawCount=', (data || []).length, 'ids=', JSON.stringify(ids));
       return ids;
     },
     enabled: !!groupId && !!user,
@@ -56,7 +56,7 @@ export function useFamilyData(groupId: string | null, filters?: FamilyDataFilter
       const { data, error } = await finalQuery.limit(100);
 
       if (error) throw error;
-      console.log('DEBUG shared-transactions', { groupId, memberIds, filters, count: data?.length, error });
+      console.log('DEBUG shared-transactions', 'groupId=', groupId, 'memberIds=', JSON.stringify(memberIds), 'filters=', JSON.stringify(filters), 'count=', data?.length, 'error=', error);
       return data;
     },
     enabled: !!groupId && memberIds.length > 0,
@@ -75,7 +75,7 @@ export function useFamilyData(groupId: string | null, filters?: FamilyDataFilter
         .eq('is_shared_with_family', true);
 
       if (error) throw error;
-      console.log('DEBUG shared-accounts', { groupId, memberIds, filters, count: data?.length, error });
+      console.log('DEBUG shared-accounts', 'groupId=', groupId, 'memberIds=', JSON.stringify(memberIds), 'filters=', JSON.stringify(filters), 'count=', data?.length, 'error=', error);
       return data;
     },
     enabled: !!groupId && memberIds.length > 0,
@@ -97,7 +97,7 @@ export function useFamilyData(groupId: string | null, filters?: FamilyDataFilter
         .eq('is_shared_with_family', true);
 
       if (error) throw error;
-      console.log('DEBUG shared-budgets', { groupId, memberIds, filters, count: data?.length, error });
+      console.log('DEBUG shared-budgets', 'groupId=', groupId, 'memberIds=', JSON.stringify(memberIds), 'filters=', JSON.stringify(filters), 'count=', data?.length, 'error=', error);
       return data;
     },
     enabled: !!groupId && memberIds.length > 0,
@@ -119,7 +119,7 @@ export function useFamilyData(groupId: string | null, filters?: FamilyDataFilter
         .eq('is_shared_with_family', true);
 
       if (error) throw error;
-      console.log('DEBUG shared-goals', { groupId, memberIds, filters, count: data?.length, error });
+      console.log('DEBUG shared-goals', 'groupId=', groupId, 'memberIds=', JSON.stringify(memberIds), 'filters=', JSON.stringify(filters), 'count=', data?.length, 'error=', error);
       return data;
     },
     enabled: !!groupId && memberIds.length > 0,
@@ -139,7 +139,7 @@ export function useFamilyData(groupId: string | null, filters?: FamilyDataFilter
         .eq('household_id', groupId);
 
       if (error) throw error;
-      console.log('DEBUG shared-debts', { groupId, memberIds, filters, count: data?.length, error });
+      console.log('DEBUG shared-debts', 'groupId=', groupId, 'memberIds=', JSON.stringify(memberIds), 'filters=', JSON.stringify(filters), 'count=', data?.length, 'error=', error);
       return data;
     },
     enabled: !!groupId && memberIds.length > 0,
@@ -187,17 +187,7 @@ export function useFamilyData(groupId: string | null, filters?: FamilyDataFilter
     return profile?.full_name || 'Membro';
   };
 
-  console.log('DEBUG useFamilyData summary', {
-    groupId,
-    memberIds,
-    memberProfiles: memberProfiles.map(p => p.id),
-    sharedTransactions: sharedTransactions.length,
-    sharedAccounts: sharedAccounts.length,
-    sharedBudgets: sharedBudgets.length,
-    sharedGoals: sharedGoals.length,
-    sharedDebts: sharedDebts.length,
-    sharedSavingsBoxes: sharedSavingsBoxes.length,
-  });
+  console.log('DEBUG useFamilyData summary', 'groupId=', groupId, 'memberIds=', JSON.stringify(memberIds), 'memberProfiles=', JSON.stringify(memberProfiles.map(p => ({ id: p.id, name: p.full_name }))), 'sharedTransactions=', sharedTransactions.length, 'sharedAccounts=', sharedAccounts.length, 'sharedBudgets=', sharedBudgets.length, 'sharedGoals=', sharedGoals.length, 'sharedDebts=', sharedDebts.length, 'sharedSavingsBoxes=', sharedSavingsBoxes.length);
 
   // Calculate summary
   const totalSharedIncome = sharedTransactions
