@@ -122,6 +122,16 @@ export function FamilySharedData({ group }: FamilySharedDataProps) {
     sharedDebts.length > 0 ||
     sharedSavingsBoxes.length > 0;
 
+  console.log('DEBUG FamilySharedData render', {
+    hasAnySharedData,
+    sharedTransactions: sharedTransactions.length,
+    sharedAccounts: sharedAccounts.length,
+    sharedBudgets: sharedBudgets.length,
+    sharedGoals: sharedGoals.length,
+    sharedDebts: sharedDebts.length,
+    sharedSavingsBoxes: sharedSavingsBoxes.length,
+  });
+
   if (!hasAnySharedData) {
     return (
       <Card>
