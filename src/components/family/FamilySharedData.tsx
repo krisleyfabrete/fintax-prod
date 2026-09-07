@@ -125,12 +125,9 @@ export function FamilySharedData({ group }: FamilySharedDataProps) {
   if (!hasAnySharedData) {
     return (
       <Card>
-        <CardContent className="py-12 text-center space-y-2">
+        <CardContent className="py-12 text-center">
           <p className="text-muted-foreground">
             Nenhum dado compartilhado ainda. Membros podem compartilhar transações, contas, orçamentos, metas, dívidas e caixinhas.
-          </p>
-          <p className="text-xs text-muted-foreground break-all">
-            Debug: grupo={group.id} | membros={memberProfiles.length} | membros_ids={memberProfiles.map(m => m.id).join(',')} | transações={sharedTransactions.length} | contas={sharedAccounts.length} | orçamentos={sharedBudgets.length} | metas={sharedGoals.length} | dívidas={sharedDebts.length} | caixinhas={sharedSavingsBoxes.length}
           </p>
         </CardContent>
       </Card>

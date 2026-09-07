@@ -288,6 +288,28 @@ export function useFamily() {
       const result = await resp.json();
       if (!resp.ok) throw new Error(result.error || 'Erro ao entrar no grupo');
 
+      const groupId = result?.groupId;
+      if (!groupId) return result;
+
+      const { data: existingMember } = await supabase
+        .from('family_members')
+        .select('id')
+        .eq('group_id', groupId)
+        .eq('user_id', user!.id)
+        .maybeSingle();
+
+      if (!existingMember) {
+        const { error: memberError } = await supabase
+          .from('family_members')
+          .insert({
+            group_id: groupId,
+            user_id: user!.id,
+            role: 'member',
+          });
+
+        if (memberError) throw memberError;
+      }
+
       return result;
     },
     onSuccess: (result: { ok: boolean; groupId: string; groupName: string }) => {
