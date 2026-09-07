@@ -13,8 +13,6 @@ export function FamilySharingToggle({
   onCheckedChange,
   hasFamily = true,
 }: FamilySharingToggleProps) {
-  console.log('FamilySharingToggle render', { hasFamily, checked });
-
   if (!hasFamily) return null;
 
   return (

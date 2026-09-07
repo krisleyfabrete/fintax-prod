@@ -56,7 +56,6 @@ export function useFamily() {
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      console.log('family-groups query result', { count: data?.length, data });
       return data as FamilyGroup[];
     },
     enabled: !!user,
@@ -439,16 +438,12 @@ export function useFamily() {
     mutationFn: async (groupId: string) => {
       if (!user) throw new Error('Usuário não autenticado');
 
-      console.log('leaveGroup start', { groupId, userId: user.id });
-
       // Remove user from group members
-      const { error, data } = await supabase
+      const { error } = await supabase
         .from('family_members')
         .delete()
         .eq('group_id', groupId)
         .eq('user_id', user.id);
-
-      console.log('leaveGroup delete result', { error, data });
 
       if (error) throw error;
 
@@ -628,7 +623,5 @@ export function useFamily() {
 
 export function useHasFamily() {
   const { data: groups } = useFamily();
-  const result = !!groups && groups.length > 0;
-  console.log('useHasFamily', { groups: groups?.length, result });
-  return result;
+  return !!groups && groups.length > 0;
 }
