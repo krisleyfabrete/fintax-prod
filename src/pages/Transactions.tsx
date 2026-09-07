@@ -11,6 +11,7 @@ import { TransactionLimitBanner } from '@/components/transactions/TransactionLim
 import { useTransactions, TransactionFilters as Filters, Transaction } from '@/hooks/useTransactions';
 import { useCategories } from '@/hooks/useCategories';
 import { useAccounts } from '@/hooks/useAccounts';
+import { useHasFamily } from '@/hooks/useFamily';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,6 +24,7 @@ import {
 } from '@/components/ui/alert-dialog';
 
 export default function Transactions() {
+  const hasFamily = useHasFamily();
   const [filters, setFilters] = useState<Filters>({});
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
@@ -172,6 +174,7 @@ export default function Transactions() {
           accounts={accounts}
           onSave={handleSave}
           isLoading={isCreating || isUpdating}
+          hasFamily={hasFamily}
         />
 
         {/* Delete Confirmation */}

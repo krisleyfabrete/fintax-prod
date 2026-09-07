@@ -589,3 +589,8 @@ export function useFamily() {
     isJoiningByPassword: joinGroupByPassword.isPending,
   };
 }
+
+export function useHasFamily() {
+  const { data: groups } = useFamily();
+  return !!groups && groups.length > 0;
+}

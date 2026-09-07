@@ -7,6 +7,7 @@ import { AccountDialog } from '@/components/accounts/AccountDialog';
 import { AccountLimitBanner } from '@/components/accounts/AccountLimitBanner';
 import { useAccounts, Account } from '@/hooks/useAccounts';
 import { useSubscription } from '@/hooks/useSubscription';
+import { useHasFamily } from '@/hooks/useFamily';
 import { useUpgradeModal } from '@/components/subscription/UpgradeModal';
 import { 
   AlertDialog,
@@ -28,6 +29,7 @@ function formatCurrency(value: number): string {
 }
 
 export default function Accounts() {
+  const hasFamily = useHasFamily();
   const { 
     accounts, 
     isLoading, 
@@ -180,6 +182,7 @@ export default function Accounts() {
         account={selectedAccount}
         onSave={handleSave}
         isLoading={isCreating || isUpdating}
+        hasFamily={hasFamily}
       />
 
       {/* Delete Confirmation Dialog */}

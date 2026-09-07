@@ -121,6 +121,25 @@ export function useFamilyData(groupId: string | null, filters?: FamilyDataFilter
     enabled: !!groupId && memberIds.length > 0,
   });
 
+  // Get shared debts from family members
+  const { data: sharedDebts = [], isLoading: isLoadingDebts } = useQuery({
+    queryKey: ['family-shared-debts', groupId, memberIds, filters?.memberId],
+    queryFn: async () => {
+      if (!groupId || memberIds.length === 0) return [];
+
+      const { data, error } = await supabase
+        .from('debts')
+        .select('*')
+        .in('user_id', filters?.memberId ? [filters.memberId] : memberIds)
+        .in('visibility', ['shared', 'household'])
+        .eq('household_id', groupId);
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!groupId && memberIds.length > 0,
+  });
+
   // Get profiles for members to show who shared what
   const { data: memberProfiles = [] } = useQuery({
     queryKey: ['family-member-profiles', memberIds],
@@ -160,12 +179,13 @@ export function useFamilyData(groupId: string | null, filters?: FamilyDataFilter
     sharedAccounts,
     sharedBudgets,
     sharedGoals,
+    sharedDebts,
     memberProfiles,
     memberIds,
     getMemberName,
     totalSharedIncome,
     totalSharedExpense,
     totalSharedBalance,
-    isLoading: isLoadingTransactions || isLoadingAccounts || isLoadingBudgets || isLoadingGoals,
+    isLoading: isLoadingTransactions || isLoadingAccounts || isLoadingBudgets || isLoadingGoals || isLoadingDebts,
   };
 }

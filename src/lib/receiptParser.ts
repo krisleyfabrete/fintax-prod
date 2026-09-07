@@ -244,52 +244,69 @@ function parseReceiptText(text: string, fileName: string): Omit<ReceiptData, 'id
     date = new Date().toISOString().split('T')[0];
   }
   
-  // ===== IMPROVED: Extract amount with context for type detection =====
-  // Try to find "valor pago" or "valor recebido" with amount first
-  const contextAmountPatterns = [
-    { pattern: /valor\s*pago[:\s]*R?\$?\s*([\d.]+,\d{2})/i, type: 'expense' as const },
-    { pattern: /valor\s*enviado[:\s]*R?\$?\s*([\d.]+,\d{2})/i, type: 'expense' as const },
-    { pattern: /valor\s*debitado[:\s]*R?\$?\s*([\d.]+,\d{2})/i, type: 'expense' as const },
-    { pattern: /valor\s*recebido[:\s]*R?\$?\s*([\d.]+,\d{2})/i, type: 'income' as const },
-    { pattern: /valor\s*creditado[:\s]*R?\$?\s*([\d.]+,\d{2})/i, type: 'income' as const },
+  // ===== IMPROVED: Extract amount with context scoring =====
+  const NEGATIVE_KEYWORDS = /\b(saldo\s*(atual|disponível|anterior|em\s*conta)|limite\s*(diário|disponível)|tarifa|juros|iof|multa|cashback|desconto|parcela\s*ant|valor\s*parcial|taxa)\b/i;
+  const POSITIVE_KEYWORDS = /\b(valor\s*(pago|recebido|enviado|transferido|creditado|debitado|liquidado|total|da\s*compra|do\s*pagamento)|total\s*pago|total\s*recebido|comprovante\s*de\s*pagamento|valor\s*da\s*transação)\b/i;
+
+  // Common OCR corruptions of currency/amount keywords
+  const ocrAmountKeywords = /\b(?:R\$\s*|Rs\s*|R5\s*|\$\s*|8\$\s*|reais)\b/i;
+
+  // Try context-aware patterns first with fuzzy OCR handling
+  const fuzzyContextAmountPatterns = [
+    { pattern: /valor\s*(?:pago|pqo|paqo|pog0|pado|pag0)[:\s]*R?\$?\s*([\d.]+,\d{2})/i, type: 'expense' as const },
+    { pattern: /valor\s*(?:enviado|enviad0|enviad0)[:\s]*R?\$?\s*([\d.]+,\d{2})/i, type: 'expense' as const },
+    { pattern: /valor\s*(?:debitado|debitad0|debltado)[:\s]*R?\$?\s*([\d.]+,\d{2})/i, type: 'expense' as const },
+    { pattern: /valor\s*(?:recebido|recebldo|receb1do|recebido)[:\s]*R?\$?\s*([\d.]+,\d{2})/i, type: 'income' as const },
+    { pattern: /valor\s*(?:creditado|creditad0|credltado)[:\s]*R?\$?\s*([\d.]+,\d{2})/i, type: 'income' as const },
+    { pattern: /total[:\s]*R?\$?\s*([\d.]+,\d{2})/i, type: 'expense' as const },
   ];
-  
+
   let amountFound = false;
-  for (const { pattern, type: amountType } of contextAmountPatterns) {
+  for (const { pattern, type: amountType } of fuzzyContextAmountPatterns) {
     const match = text.match(pattern);
     if (match) {
       const amountStr = match[1].replace(/\./g, '').replace(',', '.');
       amount = parseFloat(amountStr);
       if (amount > 0) {
-        type = amountType; // Override type based on amount context
+        type = amountType;
         confidence += 30;
         amountFound = true;
         break;
       }
     }
   }
-  
-  // If no contextual amount found, try generic patterns
+
+  // If no contextual amount found, use scored candidate search
   if (!amountFound) {
-    const amountPatterns = [
-      // R$ 1.234,56
-      /R\$\s*([\d.]+,\d{2})/i,
-      // Valor: R$ 1.234,56
-      /valor[:\s]+R?\$?\s*([\d.]+,\d{2})/i,
-      // 1.234,56 (at least one comma for cents)
-      /(?:^|\s)([\d.]+,\d{2})(?:\s|$)/,
-    ];
-    
-    for (const pattern of amountPatterns) {
-      const match = text.match(pattern);
-      if (match) {
-        const amountStr = match[1].replace(/\./g, '').replace(',', '.');
-        amount = parseFloat(amountStr);
-        if (amount > 0) {
-          confidence += 25;
-          break;
-        }
-      }
+    const amountRegex = /(?:R\$\s*|Rs\s*|R5\s*|\$\s*|8\$\s*)?(\d{1,3}(?:\.\d{3})*,\d{2})/g;
+    const candidates: { value: number; score: number; index: number }[] = [];
+    let m: RegExpExecArray | null;
+
+    while ((m = amountRegex.exec(text)) !== null) {
+      const raw = m[1];
+      const value = parseFloat(raw.replace(/\./g, '').replace(',', '.'));
+      if (!(value >= 0.01 && value <= 1_000_000)) continue;
+
+      const start = Math.max(0, m.index - 60);
+      const end = Math.min(text.length, m.index + m[0].length + 60);
+      const ctx = text.slice(start, end);
+
+      let score = 0;
+      if (POSITIVE_KEYWORDS.test(ctx)) score += 100;
+      if (NEGATIVE_KEYWORDS.test(ctx)) score -= 80;
+      if (ocrAmountKeywords.test(ctx)) score += 10;
+      if (/\btotal\b/i.test(ctx)) score += 5;
+      if (/\bcompra\b/i.test(ctx)) score += 5;
+
+      candidates.push({ value, score, index: m.index });
+    }
+
+    candidates.sort((a, b) => b.score - a.score || a.index - b.index);
+
+    if (candidates.length > 0) {
+      amount = candidates[0].value;
+      confidence += 25;
+      amountFound = true;
     }
   }
   

@@ -34,6 +34,8 @@ import { Debt, DebtPriority, DebtVisibility, DebtInterestType } from '@/hooks/us
 import { Category } from '@/hooks/useCategories';
 import { FamilySharingToggle } from '@/components/family/FamilySharingToggle';
 import { useAccounts } from '@/hooks/useAccounts';
+import { useFamily } from '@/hooks/useFamily';
+import { useAuth } from '@/contexts/AuthContext';
 import { DatePicker } from '@/components/ui/date-picker';
 
 // Formata valor para moeda brasileira (input)
@@ -69,6 +71,7 @@ const formSchema = z.object({
   description: z.string().optional(),
   responsible_user_id: z.string().optional(),
   visibility: z.enum(['private', 'shared', 'household']),
+  household_id: z.string().optional(),
   category_id: z.string().optional(),
   original_amount: z.string().min(1, 'Informe o valor original'),
   lump_sum_settlement_amount: z.string().optional(),
@@ -99,6 +102,9 @@ interface DebtDialogProps {
 
 export function DebtDialog({ open, onOpenChange, debt, categories, onSubmit }: DebtDialogProps) {
   const { accounts } = useAccounts();
+  const { groups } = useFamily();
+  const { user } = useAuth();
+  const userGroup = groups?.find(g => g.owner_id === user?.id) || groups?.[0];
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -108,6 +114,7 @@ export function DebtDialog({ open, onOpenChange, debt, categories, onSubmit }: D
       description: '',
       responsible_user_id: '',
       visibility: 'private',
+      household_id: '',
       category_id: '',
       original_amount: '',
       lump_sum_settlement_amount: '',
@@ -135,6 +142,7 @@ export function DebtDialog({ open, onOpenChange, debt, categories, onSubmit }: D
         description: debt.description || '',
         responsible_user_id: debt.responsible_user_id || '',
         visibility: debt.visibility || 'private',
+        household_id: debt.household_id || '',
         category_id: debt.category_id || '',
         original_amount: debt.original_amount ? formatCurrencyDisplay(debt.original_amount) : '',
         lump_sum_settlement_amount: debt.lump_sum_settlement_amount ? formatCurrencyDisplay(debt.lump_sum_settlement_amount) : '',
@@ -159,6 +167,7 @@ export function DebtDialog({ open, onOpenChange, debt, categories, onSubmit }: D
         description: '',
         responsible_user_id: '',
         visibility: 'private',
+        household_id: '',
         category_id: '',
         original_amount: '',
         lump_sum_settlement_amount: '',
@@ -184,6 +193,7 @@ export function DebtDialog({ open, onOpenChange, debt, categories, onSubmit }: D
   const watchInstallmentEnabled = form.watch('installment_enabled');
   const watchOriginalAmount = form.watch('original_amount');
   const watchLumpSum = form.watch('lump_sum_settlement_amount');
+  const watchVisibility = form.watch('visibility');
 
   const potentialSavings = useMemo(() => {
     const original = parseCurrency(watchOriginalAmount);
@@ -657,6 +667,33 @@ export function DebtDialog({ open, onOpenChange, debt, categories, onSubmit }: D
                     </FormItem>
                   )}
                 />
+
+                {(watchVisibility === 'shared' || watchVisibility === 'household') && groups && groups.length > 0 && (
+                  <FormField
+                    control={form.control}
+                    name="household_id"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Grupo familiar</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione um grupo" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {groups.map((group) => (
+                              <SelectItem key={group.id} value={group.id}>
+                                {group.name}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
 
                 <FormField
                   control={form.control}

@@ -46,6 +46,7 @@ import DockPreview from "./pages/DockPreview";
 import Investments from "./pages/Investments";
 import Debts from "./pages/Debts";
 import DebtDetail from "./pages/DebtDetail";
+import SavingsBoxes from "./pages/SavingsBoxes";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
 
@@ -76,6 +77,7 @@ const App = () => (
                    <Route path="/goals" element={<ProtectedRoute><Goals /></ProtectedRoute>} />
                    <Route path="/debts" element={<ProtectedRoute><Debts /></ProtectedRoute>} />
                    <Route path="/debts/:id" element={<ProtectedRoute><DebtDetail /></ProtectedRoute>} />
+                   <Route path="/savings-boxes" element={<ProtectedRoute><SavingsBoxes /></ProtectedRoute>} />
                    <Route path="/family" element={<ProtectedRoute><Family /></ProtectedRoute>} />
                   <Route path="/import" element={<ProtectedRoute><Import /></ProtectedRoute>} />
                   <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />

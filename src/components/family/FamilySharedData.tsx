@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { ArrowDownRight, ArrowUpRight, Wallet, Target, PiggyBank } from 'lucide-react';
+import { ArrowDownRight, ArrowUpRight, Wallet, Target, PiggyBank, TrendingUp } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -37,6 +37,19 @@ interface FamilyGoal {
   target_amount?: number;
 }
 
+interface FamilyDebt {
+  id: string;
+  user_id: string;
+  name: string;
+  creditor: string;
+  original_amount: number;
+  remaining_amount: number;
+  paid_amount: number;
+  paid_percentage: number;
+  status: string;
+  due_date?: string;
+}
+
 interface FamilySharedDataProps {
   group: FamilyGroup;
 }
@@ -49,6 +62,7 @@ export function FamilySharedData({ group }: FamilySharedDataProps) {
     sharedAccounts,
     sharedBudgets,
     sharedGoals,
+    sharedDebts,
     memberProfiles,
     getMemberName,
     totalSharedIncome,
@@ -92,14 +106,15 @@ export function FamilySharedData({ group }: FamilySharedDataProps) {
     sharedTransactions.length > 0 ||
     sharedAccounts.length > 0 ||
     sharedBudgets.length > 0 ||
-    sharedGoals.length > 0;
+    sharedGoals.length > 0 ||
+    sharedDebts.length > 0;
 
   if (!hasAnySharedData) {
     return (
       <Card>
         <CardContent className="py-12 text-center">
           <p className="text-muted-foreground">
-            Nenhum dado compartilhado ainda. Membros podem compartilhar transações, contas, orçamentos e metas.
+            Nenhum dado compartilhado ainda. Membros podem compartilhar transações, contas, orçamentos, metas e dívidas.
           </p>
         </CardContent>
       </Card>
@@ -162,7 +177,7 @@ export function FamilySharedData({ group }: FamilySharedDataProps) {
 
       {/* Tabs for different data types */}
       <Tabs defaultValue="transactions" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="transactions">
             Transações ({sharedTransactions.length})
           </TabsTrigger>
@@ -174,6 +189,9 @@ export function FamilySharedData({ group }: FamilySharedDataProps) {
           </TabsTrigger>
           <TabsTrigger value="goals">
             Metas ({sharedGoals.length})
+          </TabsTrigger>
+          <TabsTrigger value="debts">
+            Dívidas ({sharedDebts.length})
           </TabsTrigger>
         </TabsList>
 
@@ -315,6 +333,55 @@ export function FamilySharedData({ group }: FamilySharedDataProps) {
                         <Badge variant={goal.goal_type === 'limit' ? 'destructive' : 'default'} className="text-xs">
                           {goal.goal_type === 'limit' ? 'Limite' : 'Meta'}
                         </Badge>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })
+          )}
+        </TabsContent>
+
+        {/* Debts Tab */}
+        <TabsContent value="debts" className="space-y-3 mt-4">
+          {sharedDebts.length === 0 ? (
+            <p className="text-center text-muted-foreground py-8">Nenhuma dívida compartilhada</p>
+          ) : (
+            sharedDebts.map((debt: FamilyDebt) => {
+              const profile = getMemberProfile(debt.user_id);
+              const statusLabels: Record<string, string> = {
+                open: 'Em aberto',
+                negotiating: 'Em negociação',
+                installment: 'Parcelada',
+                overdue: 'Atrasada',
+                paid: 'Quitada',
+                canceled: 'Cancelada',
+              };
+              return (
+                <Card key={debt.id}>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={profile?.avatar_url || undefined} />
+                          <AvatarFallback className="text-xs">
+                            {getInitials(profile?.full_name)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-medium">{debt.name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {getMemberName(debt.user_id)} • {debt.creditor}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-red-600">
+                          {formatCurrency(debt.remaining_amount)}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {statusLabels[debt.status] || debt.status} • {debt.paid_percentage.toFixed(1)}%
+                        </p>
                       </div>
                     </div>
                   </CardContent>

@@ -13,6 +13,7 @@ import {
   Settings,
   LogOut,
   DollarSign,
+  PiggyBank,
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -47,17 +48,18 @@ export function NewAppSidebar({ collapsed, onCollapsedChange, className }: NewAp
     { label: 'Contas', url: '/accounts', icon: Wallet },
     { label: 'Transações', url: '/transactions', icon: ArrowUpDown },
     { label: 'Relatórios', url: '/reports', icon: PieChart },
-    {
-      label: 'Planejamento',
-      url: '/budgets',
-      icon: Layers,
-      children: [
-        { label: 'Orçamentos', url: '/budgets', icon: Target },
-        { label: 'Metas', url: '/goals', icon: Sparkles },
-        { label: 'Investimentos', url: '/investments', icon: TrendingUp },
-        { label: 'Dívidas', url: '/debts', icon: DollarSign },
-      ],
-    },
+      {
+        label: 'Planejamento',
+        url: '/budgets',
+        icon: Layers,
+        children: [
+          { label: 'Orçamentos', url: '/budgets', icon: Target },
+          { label: 'Metas', url: '/goals', icon: Sparkles },
+          { label: 'Investimentos', url: '/investments', icon: TrendingUp },
+          { label: 'Dívidas', url: '/debts', icon: DollarSign },
+          { label: 'Caixinhas', url: '/savings-boxes', icon: PiggyBank },
+        ],
+      },
     { label: 'Família', url: '/family', icon: Users },
     { label: 'Importação', url: '/import', icon: FileText },
     { label: 'Assistente IA', url: '/ai', icon: Sparkles },

@@ -4,6 +4,7 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { Button } from '@/components/ui/button';
 import { useBudgets, BudgetWithProgress } from '@/hooks/useBudgets';
 import { useCategories } from '@/hooks/useCategories';
+import { useHasFamily } from '@/hooks/useFamily';
 import { BudgetCard } from '@/components/budgets/BudgetCard';
 import { BudgetDialog } from '@/components/budgets/BudgetDialog';
 import { BudgetSummary } from '@/components/budgets/BudgetSummary';
@@ -23,6 +24,7 @@ import {
 } from '@/components/ui/alert-dialog';
 
 export default function Budgets() {
+  const hasFamily = useHasFamily();
   const now = new Date();
   const [month, setMonth] = useState(now.getMonth() + 1);
   const [year, setYear] = useState(now.getFullYear());
@@ -200,6 +202,7 @@ export default function Budgets() {
           existingCategoryIds={existingCategoryIds}
           onSave={handleSave}
           isLoading={isCreating || isUpdating}
+          hasFamily={hasFamily}
         />
 
         {/* Delete Confirmation */}

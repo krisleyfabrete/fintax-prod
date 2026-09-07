@@ -4,6 +4,7 @@ import { AppLayout } from '@/components/layout/AppLayout';
 import { useGoals, Goal, GoalInsert } from '@/hooks/useGoals';
 import { useCategories } from '@/hooks/useCategories';
 import { useTransactions } from '@/hooks/useTransactions';
+import { useHasFamily } from '@/hooks/useFamily';
 import { GoalDialog } from '@/components/goals/GoalDialog';
 import { GoalDepositDialog } from '@/components/goals/GoalDepositDialog';
 import { GoalWithdrawDialog } from '@/components/goals/GoalWithdrawDialog';
@@ -45,6 +46,7 @@ import {
 import { MoreHorizontal, CheckCircle, AlertTriangle } from 'lucide-react';
 
 export default function Goals() {
+  const hasFamily = useHasFamily();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [initialGoalType, setInitialGoalType] = useState<'limit' | 'target'>('limit');
   const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
@@ -485,6 +487,7 @@ export default function Goals() {
         onSave={handleSaveGoal}
         isLoading={isCreating || isUpdating}
         initialGoalType={initialGoalType}
+        hasFamily={hasFamily}
       />
 
       {/* Delete Confirmation */}
