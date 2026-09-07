@@ -1,5 +1,5 @@
--- Extend RLS to allow family members to read shared data
--- Use simpler and more reliable policies
+-- 0026_replace_family_shared_rls.sql
+-- Replace existing family sharing RLS policies with simpler versions
 
 -- Transactions
 drop policy if exists "Family members can read shared transactions" on public.transactions;
@@ -78,5 +78,18 @@ create policy "Family members can read shared savings boxes" on public.savings_b
       select 1 from public.family_members fm
       where fm.user_id = auth.uid()
         and fm.group_id = savings_boxes.household_id
+    )
+  );
+
+-- Debts
+drop policy if exists "Family members can read shared debts" on public.debts;
+create policy "Family members can read shared debts" on public.debts
+  for select using (
+    visibility in ('shared', 'household')
+    and household_id is not null
+    and exists (
+      select 1 from public.family_members fm
+      where fm.user_id = auth.uid()
+        and fm.group_id = debts.household_id
     )
   );
