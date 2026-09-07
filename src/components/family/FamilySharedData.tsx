@@ -50,6 +50,17 @@ interface FamilyDebt {
   due_date?: string;
 }
 
+interface FamilySavingsBox {
+  id: string;
+  user_id: string;
+  name: string;
+  description?: string;
+  target_amount: number;
+  current_amount: number;
+  color?: string;
+  icon?: string;
+}
+
 interface FamilySharedDataProps {
   group: FamilyGroup;
 }
@@ -63,6 +74,7 @@ export function FamilySharedData({ group }: FamilySharedDataProps) {
     sharedBudgets,
     sharedGoals,
     sharedDebts,
+    sharedSavingsBoxes,
     memberProfiles,
     getMemberName,
     totalSharedIncome,
@@ -107,14 +119,15 @@ export function FamilySharedData({ group }: FamilySharedDataProps) {
     sharedAccounts.length > 0 ||
     sharedBudgets.length > 0 ||
     sharedGoals.length > 0 ||
-    sharedDebts.length > 0;
+    sharedDebts.length > 0 ||
+    sharedSavingsBoxes.length > 0;
 
   if (!hasAnySharedData) {
     return (
       <Card>
         <CardContent className="py-12 text-center">
           <p className="text-muted-foreground">
-            Nenhum dado compartilhado ainda. Membros podem compartilhar transações, contas, orçamentos, metas e dívidas.
+            Nenhum dado compartilhado ainda. Membros podem compartilhar transações, contas, orçamentos, metas, dívidas e caixinhas.
           </p>
         </CardContent>
       </Card>
@@ -177,7 +190,7 @@ export function FamilySharedData({ group }: FamilySharedDataProps) {
 
       {/* Tabs for different data types */}
       <Tabs defaultValue="transactions" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="transactions">
             Transações ({sharedTransactions.length})
           </TabsTrigger>
@@ -192,6 +205,9 @@ export function FamilySharedData({ group }: FamilySharedDataProps) {
           </TabsTrigger>
           <TabsTrigger value="debts">
             Dívidas ({sharedDebts.length})
+          </TabsTrigger>
+          <TabsTrigger value="savings-boxes">
+            Caixinhas ({sharedSavingsBoxes.length})
           </TabsTrigger>
         </TabsList>
 
@@ -381,6 +397,48 @@ export function FamilySharedData({ group }: FamilySharedDataProps) {
                         </p>
                         <p className="text-xs text-muted-foreground">
                           {statusLabels[debt.status] || debt.status} • {debt.paid_percentage.toFixed(1)}%
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })
+          )}
+        </TabsContent>
+
+        {/* Savings Boxes Tab */}
+        <TabsContent value="savings-boxes" className="space-y-3 mt-4">
+          {sharedSavingsBoxes.length === 0 ? (
+            <p className="text-center text-muted-foreground py-8">Nenhuma caixinha compartilhada</p>
+          ) : (
+            sharedSavingsBoxes.map((box: FamilySavingsBox) => {
+              const profile = getMemberProfile(box.user_id);
+              const progress = box.target_amount > 0 ? (box.current_amount / box.target_amount) * 100 : 0;
+              return (
+                <Card key={box.id}>
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Avatar className="h-8 w-8">
+                          <AvatarImage src={profile?.avatar_url || undefined} />
+                          <AvatarFallback className="text-xs">
+                            {getInitials(profile?.full_name)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div>
+                          <p className="font-medium">{box.name}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {getMemberName(box.user_id)} • {box.description}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-semibold text-green-600">
+                          {formatCurrency(box.current_amount)}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          de {formatCurrency(box.target_amount)} • {progress.toFixed(0)}%
                         </p>
                       </div>
                     </div>

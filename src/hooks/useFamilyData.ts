@@ -140,6 +140,25 @@ export function useFamilyData(groupId: string | null, filters?: FamilyDataFilter
     enabled: !!groupId && memberIds.length > 0,
   });
 
+  // Get shared savings boxes from family members
+  const { data: sharedSavingsBoxes = [], isLoading: isLoadingSavingsBoxes } = useQuery({
+    queryKey: ['family-shared-savings-boxes', groupId, memberIds, filters?.memberId],
+    queryFn: async () => {
+      if (!groupId || memberIds.length === 0) return [];
+
+      const { data, error } = await supabase
+        .from('savings_boxes')
+        .select('*')
+        .in('user_id', filters?.memberId ? [filters.memberId] : memberIds)
+        .eq('is_shared_with_family', true)
+        .eq('household_id', groupId);
+
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!groupId && memberIds.length > 0,
+  });
+
   // Get profiles for members to show who shared what
   const { data: memberProfiles = [] } = useQuery({
     queryKey: ['family-member-profiles', memberIds],
@@ -180,12 +199,13 @@ export function useFamilyData(groupId: string | null, filters?: FamilyDataFilter
     sharedBudgets,
     sharedGoals,
     sharedDebts,
+    sharedSavingsBoxes,
     memberProfiles,
     memberIds,
     getMemberName,
     totalSharedIncome,
     totalSharedExpense,
     totalSharedBalance,
-    isLoading: isLoadingTransactions || isLoadingAccounts || isLoadingBudgets || isLoadingGoals || isLoadingDebts,
+    isLoading: isLoadingTransactions || isLoadingAccounts || isLoadingBudgets || isLoadingGoals || isLoadingDebts || isLoadingSavingsBoxes,
   };
 }
