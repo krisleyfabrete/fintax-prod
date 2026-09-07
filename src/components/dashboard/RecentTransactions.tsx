@@ -87,7 +87,7 @@ export function RecentTransactions({ transactions, isLoading }: RecentTransactio
                     {transaction.description || transaction.category?.name || 'Transação'}
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    {transaction.account.name} • {format(new Date(transaction.date), "dd 'de' MMM", { locale: ptBR })}
+                    {transaction.account?.name || 'Sem conta'} • {format(new Date(transaction.date), "dd 'de' MMM", { locale: ptBR })}
                   </p>
                 </div>
                 <div className={`font-semibold whitespace-nowrap ${
