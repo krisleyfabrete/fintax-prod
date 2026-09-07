@@ -7,6 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useSavingsBoxes, SavingsBox } from '@/hooks/useSavingsBoxes';
+import { useHasFamily } from '@/hooks/useFamily';
 import { SavingsBoxDialog, FormData } from '@/components/savings/SavingsBoxDialog';
 
 function formatCurrency(value: number): string {
@@ -17,6 +18,7 @@ function formatCurrency(value: number): string {
 }
 
 export default function SavingsBoxes() {
+  const hasFamily = useHasFamily();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingBox, setEditingBox] = useState<SavingsBox | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -304,6 +306,7 @@ export default function SavingsBoxes() {
           savingsBox={editingBox}
           onSave={handleSave}
           isLoading={isCreating || isUpdating}
+          hasFamily={hasFamily}
         />
 
         {/* Delete Confirmation */}

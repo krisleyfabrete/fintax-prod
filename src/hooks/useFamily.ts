@@ -622,6 +622,6 @@ export function useFamily() {
 }
 
 export function useHasFamily() {
-  const { data: groups } = useFamily();
+  const { groups } = useFamily();
   return !!groups && groups.length > 0;
 }

@@ -6,7 +6,6 @@ import { PiggyBank } from 'lucide-react';
 import { SavingsBox } from '@/hooks/useSavingsBoxes';
 import { FamilySharingToggle } from '@/components/family/FamilySharingToggle';
 import { useFamily } from '@/hooks/useFamily';
-import { useHasFamily } from '@/hooks/useFamily';
 import {
   Dialog,
   DialogContent,
@@ -81,6 +80,7 @@ interface SavingsBoxDialogProps {
   savingsBox?: SavingsBox | null;
   onSave: (data: FormData) => void;
   isLoading?: boolean;
+  hasFamily?: boolean;
 }
 
 export function SavingsBoxDialog({
@@ -89,9 +89,9 @@ export function SavingsBoxDialog({
   savingsBox,
   onSave,
   isLoading,
+  hasFamily = false,
 }: SavingsBoxDialogProps) {
   const { groups } = useFamily();
-  const hasFamily = useHasFamily();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
