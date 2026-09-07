@@ -209,12 +209,18 @@ export function useTransactions(filters?: TransactionFilters) {
     mutationFn: async (id: string) => {
       const { data, error } = await supabase
         .from('transactions')
-        .delete()
-        .eq('id', id)
         .select('debt_id')
+        .eq('id', id)
         .single();
 
       if (error) throw error;
+
+      const { error: deleteError } = await supabase
+        .from('transactions')
+        .delete()
+        .eq('id', id);
+
+      if (deleteError) throw deleteError;
       return data;
     },
     onSuccess: (data) => {
