@@ -32,7 +32,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Debt, DebtPriority, DebtVisibility, DebtInterestType } from '@/hooks/useDebts';
 import { Category } from '@/hooks/useCategories';
-import { FamilySharingToggle } from '@/components/family/FamilySharingToggle';
 import { useAccounts } from '@/hooks/useAccounts';
 import { useFamily } from '@/hooks/useFamily';
 import { useAuth } from '@/contexts/AuthContext';

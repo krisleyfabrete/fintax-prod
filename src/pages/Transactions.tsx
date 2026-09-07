@@ -77,6 +77,7 @@ export default function Transactions() {
     recurrence: 'none' | 'daily' | 'weekly' | 'monthly' | 'yearly';
     receipt_url?: string;
     debt_id?: string;
+    is_shared_with_family?: boolean;
   }) => {
     // Converte valor formatado para número
     const parseCurrency = (value: string): number => {
@@ -97,6 +98,7 @@ export default function Transactions() {
       recurrence: data.recurrence,
       receipt_url: data.receipt_url || null,
       debt_id: data.debt_id || null,
+      is_shared_with_family: data.is_shared_with_family || false,
     };
 
     if (editingTransaction) {
