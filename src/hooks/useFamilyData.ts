@@ -23,6 +23,7 @@ export function useFamilyData(groupId: string | null, filters?: FamilyDataFilter
         .eq('group_id', groupId);
 
       if (error) throw error;
+      console.log('family-member-ids query result', { groupId, memberIds: data });
       return data.map(m => m.user_id);
     },
     enabled: !!groupId && !!user,
