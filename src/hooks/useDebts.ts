@@ -138,6 +138,8 @@ export function useDebts(filters?: DebtFilters) {
         remaining_amount: debt.original_amount,
         paid_percentage: 0,
         status: 'open' as DebtStatus,
+        start_date: debt.start_date || null,
+        due_date: debt.due_date || null,
       };
 
       console.log('createDebt payload:', newDebt);
@@ -163,10 +165,15 @@ export function useDebts(filters?: DebtFilters) {
 
   const updateDebt = useMutation({
     mutationFn: async ({ id, ...updates }: DebtUpdate & { id: string }) => {
-      console.log('updateDebt payload:', { id, updates });
+      const normalizedUpdates = {
+        ...updates,
+        start_date: updates.start_date || null,
+        due_date: updates.due_date || null,
+      };
+      console.log('updateDebt payload:', { id, updates: normalizedUpdates });
       const { data, error } = await supabase
         .from('debts')
-        .update(updates)
+        .update(normalizedUpdates)
         .eq('id', id)
         .select()
         .single();

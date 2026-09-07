@@ -103,6 +103,8 @@ export default function Debts() {
       original_amount: parseCurrency(data.original_amount),
       lump_sum_settlement_amount: data.lump_sum_settlement_amount ? parseCurrency(data.lump_sum_settlement_amount) : undefined,
       installment_amount: data.installment_amount ? parseCurrency(data.installment_amount) : undefined,
+      start_date: data.start_date || null,
+      due_date: data.due_date || null,
     };
 
     if (editingDebt) {
