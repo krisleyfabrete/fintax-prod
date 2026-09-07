@@ -166,6 +166,15 @@ export function useFamily() {
         .single();
 
       if (error) throw error;
+
+      await supabase
+        .from('family_members')
+        .insert({
+          group_id: data.id,
+          user_id: user.id,
+          role: 'admin',
+        });
+
       return data;
     },
     onSuccess: () => {

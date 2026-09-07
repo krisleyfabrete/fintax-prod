@@ -87,6 +87,7 @@ export default function Goals() {
       period_type: data.period_type,
       category_id: data.category_id || null,
       start_date: data.start_date,
+      is_shared_with_family: data.is_shared_with_family || false,
     };
 
     // Extract auto-deposit config if provided

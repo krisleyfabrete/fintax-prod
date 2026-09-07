@@ -36,6 +36,7 @@ export interface GoalInsert {
   end_date?: string | null;
   is_active?: boolean;
   goal_type?: 'limit' | 'target';
+  is_shared_with_family?: boolean;
 }
 
 export function useGoals() {
