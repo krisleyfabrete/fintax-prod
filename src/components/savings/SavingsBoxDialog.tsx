@@ -12,6 +12,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from '@/components/ui/dialog';
 import {
   Form,
@@ -144,6 +145,9 @@ export function SavingsBoxDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{savingsBox ? 'Editar Caixinha' : 'Nova Caixinha'}</DialogTitle>
+          <DialogDescription>
+            {savingsBox ? 'Altere os dados da caixinha.' : 'Crie uma nova caixinha para organizar suas economias.'}
+          </DialogDescription>
         </DialogHeader>
 
         <Form {...form}>
