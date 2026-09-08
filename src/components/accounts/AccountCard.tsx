@@ -68,15 +68,15 @@ export function AccountCard({ account, onEdit, onDelete }: AccountCardProps) {
           
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2">
-              <h3 className="font-semibold truncate">{account.name}</h3>
-              {!account.is_active && (
+              <h3 className="font-semibold truncate">{account?.name || 'Sem nome'}</h3>
+              {!account?.is_active && (
                 <span className="text-xs bg-muted px-2 py-0.5 rounded-full text-muted-foreground">
                   Inativa
                 </span>
               )}
             </div>
             <p className="text-sm text-muted-foreground">
-              {ACCOUNT_TYPE_LABELS[account.type]}
+              {account ? ACCOUNT_TYPE_LABELS[account.type] : '--'}
             </p>
           </div>
 

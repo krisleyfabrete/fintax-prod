@@ -270,10 +270,10 @@ export function FamilySharedData({ group }: FamilySharedDataProps) {
                           className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold"
                           style={{ backgroundColor: account.color || '#8B5CF6' }}
                         >
-                          {account.name.substring(0, 2).toUpperCase()}
+                           {account.name?.substring(0, 2).toUpperCase() || '--'}
                         </div>
                         <div>
-                          <p className="font-medium">{account.name}</p>
+                          <p className="font-medium">{account.name || 'Sem nome'}</p>
                           <p className="text-xs text-muted-foreground">
                             {getMemberName(account.user_id)}
                           </p>

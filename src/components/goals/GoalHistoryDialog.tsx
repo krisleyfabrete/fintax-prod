@@ -167,21 +167,21 @@ export function GoalHistoryDialog({
                       <p className="text-sm font-medium truncate">
                         {isDeposit ? 'Depósito' : 'Saque'}
                       </p>
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                        {transaction.account && (
-                          <>
-                            <div
-                              className="w-2 h-2 rounded-full"
-                              style={{ backgroundColor: transaction.account.color || '#8B5CF6' }}
-                            />
-                            <span>{transaction.account.name}</span>
-                            <span>•</span>
-                          </>
-                        )}
-                        <span>
-                          {format(new Date(transaction.date), "dd 'de' MMM, yyyy", { locale: ptBR })}
-                        </span>
-                      </div>
+                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                         {transaction.account && (
+                           <>
+                             <div
+                               className="w-2 h-2 rounded-full"
+                               style={{ backgroundColor: transaction.account.color || '#8B5CF6' }}
+                             />
+                             <span>{transaction.account.name || 'Sem conta'}</span>
+                             <span>•</span>
+                           </>
+                         )}
+                         <span>
+                           {format(new Date(transaction.date), "dd 'de' MMM, yyyy", { locale: ptBR })}
+                         </span>
+                       </div>
                     </div>
                     <div className={`font-medium ${isDeposit ? 'text-green-500' : 'text-red-500'}`}>
                       {isDeposit ? '+' : '-'}{formatCurrency(transaction.amount)}
